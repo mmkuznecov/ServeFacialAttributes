@@ -7,6 +7,8 @@ STORE_DIR="./deployment/model_store"
 # Ensure the model store directory exists
 mkdir -p $STORE_DIR
 
+################################### CLASSIFIER MODELS ####################################
+
 # Define the handler and "model file" path (since we're using a dynamic handler approach)
 HANDLER="handlers/classifiers_handler/classifier_handler.py"
 MODEL_FILE="handlers/classifiers_handler/classifier_handler.py" # Dynamic handler acts as the model file in this context
@@ -44,5 +46,8 @@ for MODEL_PATH in $MODEL_DIR/*; do
         echo "Generated MAR file for $MODEL_NAME at $STORE_DIR/$MODEL_NAME.mar"
     fi
 done
+
+
+################################### HEADPOSE MODEL ####################################
 
 echo "MAR file generation complete."

@@ -11,9 +11,6 @@ class SixDRepNet360Handler(BaseHandler):
     TorchServe handler for the SixDRepNet360 model.
     """
     def initialize(self, context):
-        """Initialize method loads the model and other required elements."""
-        super().initialize(context)
-        # Instantiate the HeadPoseEstimator with the model's weight URL or path
         self.manifest = context.manifest
         properties = context.system_properties
         model_dir = properties.get("model_dir")
@@ -21,28 +18,25 @@ class SixDRepNet360Handler(BaseHandler):
         model_pt_path = os.path.join(model_dir, serialized_file)
         self.estimator = HeadPoseEstimator(weights_url=model_pt_path)
 
-    def preprocess(self, data) -> List:
-        """Preprocess the input data."""
-        images = []
+    def _preprocess_one_image(self, req):
+        """
+        Process one single image.
+        """
+        image = req.get("data")
+        if image is None:
+            image = req.get("body")
+        # create a stream from the encoded image
+        image = Image.open(io.BytesIO(image))
+        return image
 
-        # Process each input data
-        for row in data:
-            # Retrieve image data from the request
-            image = row.get("data") or row.get("body")
-            if isinstance(image, str):
-                image = Image.open(io.BytesIO(image.encode('utf-8')))
-            elif isinstance(image, bytes):
-                image = Image.open(io.BytesIO(image))
-            else:
-                raise ValueError("Unsupported image format")
-
-            image = self.estimator.process_image(image)
-            images.append(image)
-
+    def preprocess(self, requests):
+        images = [self._preprocess_one_image(req=req) for req in requests]
         return images
 
     def inference(self, img) -> List:
         """Run inference on the preprocessed data."""
+        print(type(img))
+        print(type(img[0]))
         return self.estimator.predict(img)
 
     def postprocess(self, inference_output) -> List:

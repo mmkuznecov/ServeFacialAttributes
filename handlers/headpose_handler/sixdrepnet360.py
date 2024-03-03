@@ -3,11 +3,11 @@ import torch.nn as nn
 import torchvision
 import torchvision.transforms as transforms
 import numpy as np
-import cv2
 from typing import Union, List
 from PIL import Image
 import sixderpnet360_utils
 import math
+
 
 class SixDRepNet360(nn.Module):
     def __init__(self, block, layers, fc_layers=1):
@@ -24,8 +24,7 @@ class SixDRepNet360(nn.Module):
         self.layer4 = self._make_layer(block, 512, layers[3], stride=2)
         self.avgpool = nn.AvgPool2d(7)
 
-        self.linear_reg = nn.Linear(512*block.expansion,6)
-      
+        self.linear_reg = nn.Linear(512*block.expansion, 6)
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
                 n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
@@ -69,12 +68,10 @@ class SixDRepNet360(nn.Module):
         out = sixderpnet360_utils.compute_rotation_matrix_from_ortho6d(x)
 
         return out
-    
-
 
     
 class HeadPoseEstimator:
-    def __init__(self, weights_url = None):
+    def __init__(self, weights_url=None):
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         self.model = SixDRepNet360(torchvision.models.resnet.Bottleneck, [3, 4, 6, 3])
         self.load_weights(weights_url)
@@ -98,39 +95,27 @@ class HeadPoseEstimator:
         else:
             self.model.load_state_dict(saved_state_dict)
 
-    def process_image(self, image: Union[str, np.ndarray]) -> torch.Tensor:
-        if isinstance(image, str):
-            image = cv2.imread(image)
-        if isinstance(image, np.ndarray):
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        image = Image.fromarray(image)
-        return self.transform(image)
+    def process_image(self, image: Union[str, np.ndarray, Image.Image]) -> torch.Tensor:
+        # Adjust the condition to handle PIL.Image inputs
+        if isinstance(image, Image.Image):
+            image_tensor = self.transform(image)
+        elif isinstance(image, str):
+            image = Image.open(image)
+            image_tensor = self.transform(image)
+        elif isinstance(image, np.ndarray):
+            image = Image.fromarray(image)
+            image_tensor = self.transform(image)
+        else:
+            raise TypeError("Unsupported image type")
+        return image_tensor.to(self.device)
 
-    def predict(self, images: Union[str, np.ndarray, List[Union[str, np.ndarray]]]) -> Union[np.ndarray, List[np.ndarray]]:
+    def predict(self, images: Union[str, np.ndarray, List[Union[str, np.ndarray, Image.Image]]]) -> Union[np.ndarray, List[np.ndarray]]:
         if not isinstance(images, list):
             images = [images]
         
-        batch = torch.stack([self.process_image(img) for img in images]).to(self.device)
+        batch = torch.stack([self.process_image(img) for img in images])
         
         with torch.no_grad():
             R_pred = self.model(batch)
             euler_angles = sixderpnet360_utils.compute_euler_angles_from_rotation_matrices(R_pred) * 180 / np.pi
             return euler_angles.cpu().numpy()
-        
-        
-def test():
-    
-    head_pose_estimator = HeadPoseEstimator()
-    
-    image_paths = ['face_img.jpg', 'face_img.jpg']
-    
-    poses = head_pose_estimator.predict(image_paths)
-    
-    for pose in poses:
-        yaw, pitch, roll = pose
-        print(f"Yaw: {yaw}, Pitch: {pitch}, Roll: {roll}")
-
-if __name__ == "__main__":
-    
-    test()
-    
