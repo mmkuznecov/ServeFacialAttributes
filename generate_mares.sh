@@ -8,8 +8,8 @@ STORE_DIR="./deployment/model_store"
 mkdir -p $STORE_DIR
 
 # Define the handler and "model file" path (since we're using a dynamic handler approach)
-HANDLER="basehandler.py"
-MODEL_FILE="basehandler.py" # Dynamic handler acts as the model file in this context
+HANDLER="handlers/classifiers_handler/classifier_handler.py"
+MODEL_FILE="handlers/classifiers_handler/classifier_handler.py" # Dynamic handler acts as the model file in this context
 
 # Loop through each model directory in the models directory
 for MODEL_PATH in $MODEL_DIR/*; do
@@ -37,7 +37,7 @@ for MODEL_PATH in $MODEL_DIR/*; do
                              --model-file $MODEL_FILE \
                              --serialized-file $WEIGHTS_FILE \
                              --handler $HANDLER \
-                             --extra-files $INDEX_TO_NAME_FILE,customresnetclassifier.py \
+                             --extra-files $INDEX_TO_NAME_FILE,handlers/classifiers_handler/customresnetclassifier.py \
                              --export-path $STORE_DIR \
                              --force
 

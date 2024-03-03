@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import Mock
-from basehandler import DynamicModelHandler
+from classifier_handler import DynamicModelHandler
 import os
 
 
