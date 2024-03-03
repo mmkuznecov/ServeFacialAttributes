@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Directly define the list of models to serve
-MODELS="gender emotions beard"
+MODELS="gender emotions beard headpose"
 
 # Path to the model store directory
 MODEL_STORE="deployment/model_store"
