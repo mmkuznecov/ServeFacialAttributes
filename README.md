@@ -8,6 +8,12 @@ to check if instance is okay
 
 ## Service running
 
+In order to download weights of models, please, run:
+
+```bash
+python utils/download.py
+```
+
 In order to generate `.mar` archives for your models, just run
 
 ```bash
