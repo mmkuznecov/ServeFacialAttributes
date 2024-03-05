@@ -24,7 +24,7 @@ if __name__ == "__main__":
     # Example usage
     image_path = 'test_images/baldboi.jpg'
     service_url = 'http://localhost:8080/predictions/'
-    models = ['emotions', 'gender', 'headpose', 'face_detection']  # Add more model names as needed
+    models = ['emotions', 'gender', 'headpose', 'face_detection', 'ita']  # Add more model names as needed
 
     # Get predictions
     predictions = predict_image(image_path, service_url, models)

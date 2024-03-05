@@ -87,4 +87,28 @@ else
 fi
 
 
+################################### ITA CALCULATOR ####################################
+
+ITA_CALCULATION_MODEL_NAME="ita"
+ITA_CALCULATION_HANDLER_DIR="handlers/ita_handler"
+ITA_CALCULATION_HANDLER="$ITA_CALCULATION_HANDLER_DIR/ita_handler.py"
+LANDMARKS_MODEL="$MODEL_DIR/ita/weights/lbfmodel.yaml"
+ITA_EXTRA_FILES="$ITA_CALCULATION_HANDLER_DIR/ita_calculator.py"
+
+if [ -f "$LANDMARKS_MODEL" ]; then
+    torch-model-archiver --model-name $ITA_CALCULATION_MODEL_NAME \
+                         --version 1.0 \
+                         --model-file $ITA_CALCULATION_HANDLER \
+                         --serialized-file $LANDMARKS_MODEL \
+                         --handler $ITA_CALCULATION_HANDLER \
+                         --extra-files  $ITA_EXTRA_FILES \
+                         --export-path $STORE_DIR \
+                         --force
+
+    echo "Generated MAR file for $ITA_CALCULATION_MODEL_NAME at $STORE_DIR/$ITA_CALCULATION_MODEL_NAME.mar"
+else
+    echo "No weights file found for $ITA_CALCULATION_MODEL_NAME, skipping..."
+fi
+
+
 echo "MAR file generation complete."
