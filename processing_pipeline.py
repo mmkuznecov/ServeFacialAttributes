@@ -1,34 +1,41 @@
-import requests
+import aiohttp
+import asyncio
+import json
 
 
-def predict_image(image_path, service_url, models):
-    results = {}
-
+async def predict_image_async(session, image_path, model_url):
     with open(image_path, 'rb') as img_file:
         img_binary = img_file.read()
 
-        for model in models:
-            model_url = f"{service_url}{model}"
-            # Send the image as raw binary data
-            response = requests.post(model_url, data=img_binary, headers={'Content-Type': 'application/octet-stream'})
+    async with session.post(model_url, data=img_binary, headers={'Content-Type': 'application/octet-stream'}) as response:
+        if response.status == 200:
+            response_text = await response.text()
+            try:
+                # Manually decode the JSON content
+                return json.loads(response_text)
+            except json.JSONDecodeError as e:
+                return f"Error decoding JSON response: {e}"
+        else:
+            return f"Error: Received status code {response.status}"
 
-            if response.status_code == 200:
-                results[model] = response.json()
-            else:
-                results[model] = f"Error: Received status code {response.status_code}"
 
+async def predict_images_async(image_path, service_url, models):
+    results = {}
+    async with aiohttp.ClientSession() as session:
+        tasks = [predict_image_async(session, image_path, f"{service_url}{model}") for model in models]
+        predictions = await asyncio.gather(*tasks)
+        results = dict(zip(models, predictions))
     return results
 
 
+def predict_image(image_path, service_url, models):
+    return asyncio.run(predict_images_async(image_path, service_url, models))
+
+
 if __name__ == "__main__":
-    # Example usage
     image_path = 'test_images/baldboi.jpg'
     service_url = 'http://localhost:8080/predictions/'
-    models = ['emotions', 'gender', 'headpose', 'face_detection', 'ita']  # Add more model names as needed
-
-    # Get predictions
+    models = ['emotions', 'gender', 'headpose', 'face_detection', 'ita']
     predictions = predict_image(image_path, service_url, models)
-
-    # Print the predictions
     for model, result in predictions.items():
         print(f"Model: {model}, Prediction: {result}")
