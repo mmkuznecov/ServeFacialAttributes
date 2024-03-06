@@ -1,6 +1,7 @@
 import aiohttp
 import asyncio
 import json
+import os
 
 
 async def predict_image_async(session, image_path, model_url):
@@ -35,7 +36,7 @@ def predict_image(image_path, service_url, models):
 if __name__ == "__main__":
     image_path = 'test_images/baldboi.jpg'
     service_url = 'http://localhost:8080/predictions/'
-    models = ['emotions', 'gender', 'headpose', 'face_detection', 'ita']
+    models = os.listdir('models')
     predictions = predict_image(image_path, service_url, models)
     for model, result in predictions.items():
         print(f"Model: {model}, Prediction: {result}")
