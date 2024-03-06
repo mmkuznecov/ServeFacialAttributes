@@ -23,8 +23,11 @@ done
 # Remove the trailing comma
 MODELS_PARAM=${MODELS_PARAM%?}
 
+# Config properties for inference
+CONFIG_PROPERTIES="config.properties"
+
 # Command to start TorchServe with the specified models
-TORCHSERVE_CMD="torchserve --start --model-store $MODEL_STORE --models $MODELS_PARAM"
+TORCHSERVE_CMD="torchserve --start --model-store $MODEL_STORE --models $MODELS_PARAM --ts-config $CONFIG_PROPERTIES"
 
 echo "Starting TorchServe with command:"
 echo $TORCHSERVE_CMD
