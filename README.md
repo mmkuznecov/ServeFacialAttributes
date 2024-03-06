@@ -1,11 +1,3 @@
-## API Specification
-
-```bash
-curl http://localhost:8080/ping
-```
-
-to check if instance is okay
-
 ## Service running
 
 In order to download weights of models, please, run:
@@ -36,4 +28,18 @@ Example of testing custom handler with context mocking:
 
 ```bash
 pytest -v handlers/classifiers_handler/classifier_handler_test.py
+```
+
+## API Specification
+
+In order to check if service as running, please, use:
+
+```bash
+curl http://localhost:8080/ping
+```
+
+To get prediction from the specific model:
+
+```bash
+curl -X POST http://localhost:8080/predictions/{model_name} -T {path_to_image}
 ```
