@@ -7,16 +7,18 @@ import numpy as np
 import cv2
 from typing import List, Union
 
-transform = transforms.Compose([
-    transforms.Resize((224, 224)),
-    transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-])
+transform = transforms.Compose(
+    [
+        transforms.Resize((224, 224)),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+    ]
+)
 
 
 class CustomResnetClassifier:
     def __init__(self, weights: str, num_classes=1):
-        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.num_classes = num_classes
         model = models.resnet50(pretrained=False)
         num_ftrs = model.fc.in_features
@@ -42,11 +44,13 @@ class CustomResnetClassifier:
         with torch.no_grad():
             result = self.model(batch)
         return result
-    
-    def predict_label(self, image: Union[str, np.ndarray, Image.Image, List], mapping) -> List[dict]:
+
+    def predict_label(
+        self, image: Union[str, np.ndarray, Image.Image, List], mapping
+    ) -> List[dict]:
         result = self.predict(image)
         predictions = []
-        if self.num_classes > 1: 
+        if self.num_classes > 1:
             # Multi-class classification
             probabilities = F.softmax(result, dim=1).cpu().numpy()
             for prob in probabilities:
@@ -57,6 +61,9 @@ class CustomResnetClassifier:
             probabilities = torch.sigmoid(result).cpu().numpy()
             for prob in probabilities:
                 # Assuming mapping contains exactly 2 classes for binary classification
-                class_predictions = {mapping[0]: float(1 - prob), mapping[1]: float(prob)}
+                class_predictions = {
+                    mapping[0]: float(1 - prob),
+                    mapping[1]: float(prob),
+                }
                 predictions.append(class_predictions)
         return predictions

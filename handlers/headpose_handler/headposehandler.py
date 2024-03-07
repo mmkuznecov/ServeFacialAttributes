@@ -10,11 +10,12 @@ class SixDRepNet360Handler(BaseHandler):
     """
     TorchServe handler for the SixDRepNet360 model.
     """
+
     def initialize(self, context):
         self.manifest = context.manifest
         properties = context.system_properties
         model_dir = properties.get("model_dir")
-        serialized_file = self.manifest['model']['serializedFile']
+        serialized_file = self.manifest["model"]["serializedFile"]
         model_pt_path = os.path.join(model_dir, serialized_file)
         self.estimator = HeadPoseEstimator(weights_url=model_pt_path)
 
@@ -43,9 +44,11 @@ class SixDRepNet360Handler(BaseHandler):
         """Postprocess the inference output."""
         results = []
         for output in inference_output:
-            results.append({
-                "yaw": float(output[0]),
-                "pitch": float(output[1]),
-                "roll": float(output[2])
-            })
+            results.append(
+                {
+                    "yaw": float(output[0]),
+                    "pitch": float(output[1]),
+                    "roll": float(output[2]),
+                }
+            )
         return results

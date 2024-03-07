@@ -8,12 +8,13 @@ class YOLOv8FaceDetectionHandler(BaseHandler):
     """
     TorchServe handler for YOLOv8 face detection.
     """
+
     def initialize(self, context):
         """Initialize method loads the model."""
         self.manifest = context.manifest
         properties = context.system_properties
         model_dir = properties.get("model_dir")
-        serialized_file = self.manifest['model']['serializedFile']
+        serialized_file = self.manifest["model"]["serializedFile"]
         model_pt_path = f"{model_dir}/{serialized_file}"
         self.model = YOLO(model_pt_path)
 

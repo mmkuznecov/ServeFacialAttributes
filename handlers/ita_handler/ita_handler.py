@@ -10,11 +10,12 @@ class ITAHandler(BaseHandler):
     """
     Handler for calculating Individual Typology Angle (ITA).
     """
-    def initialize(self, context):        
+
+    def initialize(self, context):
         self.manifest = context.manifest
         properties = context.system_properties
         model_dir = properties.get("model_dir")
-        serialized_file = self.manifest['model']['serializedFile']
+        serialized_file = self.manifest["model"]["serializedFile"]
         model_path = f"{model_dir}/{serialized_file}"
 
         # Initialize the ITACalculator with the model path
@@ -23,7 +24,7 @@ class ITAHandler(BaseHandler):
     def preprocess(self, data):
         images = []
         for request_data in data:
-            image_data = request_data.get('data') or request_data.get('body')
+            image_data = request_data.get("data") or request_data.get("body")
             image = Image.open(io.BytesIO(image_data))
             image = np.array(image)
             # Ensure image is in RGB format
@@ -42,5 +43,5 @@ class ITAHandler(BaseHandler):
         return ita_values
 
     def postprocess(self, inference_output):
-        results = [{'ita_value': ita} for ita in inference_output]
+        results = [{"ita_value": ita} for ita in inference_output]
         return results
