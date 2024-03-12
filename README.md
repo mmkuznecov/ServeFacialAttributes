@@ -42,6 +42,17 @@ To verify that the service is running correctly, execute:
 python processing_pipeline.py
 ```
 
+**Running the Stress Test**
+
+To run the stress test of service:
+
+```bash
+locust -f locustfile.py --host=http://localhost:8080 --web-port=[your_port]
+```
+
+After running the command, open a web browser and navigate to http://localhost:your_port to access Locust's web interface. From here, you can start the test, specify the number of users to simulate, the spawn rate, and monitor the performance metrics in real-time.
+
+
 ### Testing Custom Handlers
 
 Run the following command to test custom handler for classification with context mocking:
