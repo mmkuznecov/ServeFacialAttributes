@@ -61,6 +61,28 @@ Run the following command to test custom handler for classification with context
 pytest -v handlers/classifiers_handler/classifier_handler_test.py
 ```
 
+## Running with Docker
+
+### Building the Docker Image
+
+To build the Docker image for the Facial Attributes Service, navigate to the root directory of the project and run the following command:
+
+```bash
+docker build . -t serve-facial-attributes -f deployment/Dockerfile
+```
+
+This command builds a Docker image named `serve-facial-attributes` using the Dockerfile located in the deployment directory.
+
+### Running the Service in a Docker Container
+
+After building the image, you can start the service in a Docker container using the following command:
+
+```bash
+docker run --gpus all -p 8080:8080 -p 8081:8081 -p 8082:8082 serve-facial-attributes
+```
+
+This command runs the Docker container with GPU support enabled (make sure your Docker setup supports GPUs), mapping ports 8080, 8081 and 8082 from the container to the host.
+
 ## API Reference
 
 ### Health Check
