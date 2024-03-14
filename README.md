@@ -105,15 +105,15 @@ curl -X POST http://localhost:8080/predictions/{model_name} -T {path_to_image}
 
 The table below summarizes the currently implemented models in the service:
 
-| Model Name      | Model Type      | Output Description                                                                                     |
-|-----------------|-----------------|--------------------------------------------------------------------------------------------------------|
-| beard           | Classification  | Probabilities for beard presence: no_beard, beard                                                      |
-| baldness        | Classification  | Probabilities for baldness: not_bald, bald                                                             |
-| gender          | Classification  | Probabilities for gender: Female, Male                                                                 |
-| glasses         | Classification  | Probabilities for glasses presence: no_glasses, glasses                                                |
-| happiness       | Classification  | Probabilities for happiness: not_happy, happy                                                          |
-| emotions        | Classification  | Probabilities for emotions: angry, disgust, fear, happy, neutral, sad, surprise                        |
-| face_detection  | Detection       | Bounding boxes for detected faces                                                                      |
-| headpose        | Regression      | Yaw, pitch, and roll angles of the head                                                                |
-| ita             | Regression      | Individual Typology Angle (ITA) value                                                                  |
-| race            | Classification  | Probabilities for race: Black, East Asian, Indian, Latino_Hispanic, Middle Eastern, Southeast Asian, White |
+| Model Name      | Model Type      | Output Description                                                                                     | Additional Info |
+|-----------------|-----------------|--------------------------------------------------------------------------------------------------------|-----------------|
+| `beard`           | Classification  | Probabilities for beard presence: `no_beard`, `beard`                                                      | Binary classifier trained on [CelebA](https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html) to detect facial hair presence. |
+| `baldness`        | Classification  | Probabilities for baldness: `not_bald`, `bald`                                                             | Binary classifier trained on [CelebA](https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html) for baldness detection. |
+| `gender`          | Classification  | Probabilities for gender: `Female`, `Male`                                                                 | Binary classifier trained on [CelebA](https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html) and [FairFace](https://github.com/joojs/fairface) for gender classification. |
+| `glasses`         | Classification  | Probabilities for glasses presence: `no_glasses`, `glasses`                                                | Binary classifier trained on [CelebA](https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html) and [Glasses or No Glasses](https://www.kaggle.com/datasets/jeffheaton/glasses-or-no-glasses) for glasses detection. |
+| `happiness`       | Classification  | Probabilities for happiness: `not_happy`, `happy`                                                          | Binary classifier trained on [FER2013](https://paperswithcode.com/dataset/fer2013) and [AffectNet](https://www.kaggle.com/datasets/noamsegal/affectnet-training-data) for happiness detection. |
+| `emotions`        | Classification  | Probabilities for emotions: `angry`, `disgust`, `fear`, `happy`, `neutral`, `sad`, `surprise`                        | Multiclass classifier trained on [FER2013](https://paperswithcode.com/dataset/fer2013) and [AffectNet](https://www.kaggle.com/datasets/noamsegal/affectnet-training-data) for emotion classification. |
+| `face_detection`  | Detection       | Bounding boxes for detected faces                                                                      | YOLOv8-nano model for face detection. Model available [here](https://drive.usercontent.google.com/download?id=1qcr9DbgsX3ryrz2uU8w4Xm3cOrRywXqb&export=download&authuser=0). |
+| `headpose`        | Regression      | Yaw, pitch, and roll angles of the head                                                                | Regression model [6DRepNet360](https://github.com/thohemp/6DRepNet360) for head pose estimation. |
+| `ita`             | Calculation     | Individual Typology Angle (ITA) value                                                                  | Calculator for [Individual Typology Angle](https://ieeexplore.ieee.org/document/1038016). |
+| `race`            | Classification  | Probabilities for race: `Black`, `East Asian`, `Indian`, `Latino_Hispanic`, `Middle Eastern`, `Southeast Asian`, `White` | Multiclass classifier trained on [FairFace](https://github.com/joojs/fairface) for race classification. |
