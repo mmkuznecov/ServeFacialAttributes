@@ -5,13 +5,12 @@ import os
 
 
 async def predict_image_async(session, image_path, model_url):
-    with open(image_path, 'rb') as img_file:
+    with open(image_path, "rb") as img_file:
         img_binary = img_file.read()
 
     async with session.post(
-            model_url,
-            data=img_binary,
-            headers={'Content-Type': 'application/octet-stream'}) as response:
+        model_url, data=img_binary, headers={"Content-Type": "application/octet-stream"}
+    ) as response:
         if response.status == 200:
             response_text = await response.text()
             try:
@@ -41,15 +40,25 @@ def predict_image(image_path, service_url, models):
 
 if __name__ == "__main__":
 
-    service_url = 'http://localhost:8080/predictions/'
-    images_dir = 'test_images'
-    images = [
-        os.path.join(images_dir, img_path)
-        for img_path in os.listdir(images_dir)
+    service_url = "http://localhost:8080/predictions/"
+    images_dir = "test_images"
+    images = [os.path.join(images_dir, img_path) for img_path in os.listdir(images_dir)]
+
+    models = [
+        "beard",
+        "baldness",
+        "gender",
+        "face_detection",
+        "glasses",
+        "happiness",
+        "ita",
+        "headpose",
+        "race",
+        "emotions",
     ]
+
     for image_path in images:
-        print(f'Results for image {image_path}')
-        models = os.listdir('models')
+        print(f"Results for image {image_path}")
         predictions = predict_image(image_path, service_url, models)
         for model, result in predictions.items():
             print(f"Model: {model}, Prediction: {result}")

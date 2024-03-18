@@ -21,8 +21,7 @@ def download_model_weights(model_name, url):
     target_dir = os.path.join(models_dir, model_name, "weights")
     os.makedirs(target_dir, exist_ok=True)
     print(f"Downloading weights for {model_name}...")
-    subprocess.run(["wget", "--content-disposition", url, "-P", target_dir],
-                   check=True)
+    subprocess.run(["wget", "--content-disposition", url, "-P", target_dir], check=True)
     print(f"Download completed for {model_name}")
 
 
