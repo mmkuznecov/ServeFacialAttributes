@@ -5,8 +5,21 @@ import torchvision.transforms as transforms
 import numpy as np
 from typing import Union, List
 from PIL import Image
-import sixderpnet360_utils
 import math
+import os
+
+TS_IS_RUNNING = bool(os.environ.get("TS_IS_RUNNING"))
+
+if TS_IS_RUNNING:
+    from sixderpnet360_utils import (
+        compute_rotation_matrix_from_ortho6d,
+        compute_euler_angles_from_rotation_matrices,
+    )
+else:
+    from .sixderpnet360_utils import (
+        compute_rotation_matrix_from_ortho6d,
+        compute_euler_angles_from_rotation_matrices,
+    )
 
 
 class SixDRepNet360(nn.Module):
@@ -69,7 +82,7 @@ class SixDRepNet360(nn.Module):
         x = x.view(x.size(0), -1)
 
         x = self.linear_reg(x)
-        out = sixderpnet360_utils.compute_rotation_matrix_from_ortho6d(x)
+        out = compute_rotation_matrix_from_ortho6d(x)
 
         return out
 
@@ -130,8 +143,6 @@ class HeadPoseEstimator:
         with torch.no_grad():
             R_pred = self.model(batch)
             euler_angles = (
-                sixderpnet360_utils.compute_euler_angles_from_rotation_matrices(R_pred)
-                * 180
-                / np.pi
+                compute_euler_angles_from_rotation_matrices(R_pred) * 180 / np.pi
             )
             return euler_angles.cpu().numpy()

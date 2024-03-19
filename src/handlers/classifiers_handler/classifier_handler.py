@@ -4,7 +4,14 @@ import json
 import torch
 from PIL import Image
 from ts.torch_handler.base_handler import BaseHandler
-from customresnetclassifier import CustomResnetClassifier
+
+
+TS_IS_RUNNING = bool(os.environ.get("TS_IS_RUNNING"))
+
+if TS_IS_RUNNING:
+    from customresnetclassifier import CustomResnetClassifier
+else:
+    from .customresnetclassifier import CustomResnetClassifier
 
 
 class DynamicModelHandler(BaseHandler):

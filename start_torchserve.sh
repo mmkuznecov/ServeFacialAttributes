@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export TS_IS_RUNNING=true
+
 # Directly define the list of models to serve
 MODELS="baldness beard emotions face_detection gender glasses happiness headpose ita race"
 

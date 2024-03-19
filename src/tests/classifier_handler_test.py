@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import Mock
-from classifier_handler import DynamicModelHandler
+from src.handlers.classifiers_handler.classifier_handler import DynamicModelHandler
 import os
 
 
@@ -28,7 +28,7 @@ def mock_context(request):
     indirect=["mock_context"],
 )
 def test_handler_with_mock(mock_context):
-    image_path = os.path.join("test_images", "hairboy.jpg")
+    image_path = os.path.join("test_images", "not_bald.jpg")
 
     def load_image_as_request_input(image_path):
         with open(image_path, "rb") as img_file:

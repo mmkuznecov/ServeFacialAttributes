@@ -13,7 +13,7 @@ mkdir -p $STORE_DIR
 declare -a CLASSIFIER_MODELS=("baldness" "beard" "emotions" "gender" "glasses" "happiness" "race")
 
 # Define the handler and "model file" path (since we're using a dynamic handler approach)
-CLASSIFIER_HANDLER="handlers/classifiers_handler"
+CLASSIFIER_HANDLER="src/handlers/classifiers_handler"
 HANDLER="$CLASSIFIER_HANDLER/classifier_handler.py"
 MODEL_FILE="$CLASSIFIER_HANDLER/classifier_handler.py" # Dynamic handler acts as the model file in this context
 
@@ -30,7 +30,7 @@ for MODEL_NAME in "${CLASSIFIER_MODELS[@]}"; do
                              --model-file $MODEL_FILE \
                              --serialized-file $WEIGHTS_FILE \
                              --handler $HANDLER \
-                             --extra-files $INDEX_TO_NAME_FILE,$CLASSIFIER_HANDLER/customresnetclassifier.py \
+                             --extra-files $INDEX_TO_NAME_FILE,$INIT_FILE,$CLASSIFIER_HANDLER/customresnetclassifier.py \
                              --export-path $STORE_DIR \
                              --force
 
@@ -45,8 +45,8 @@ done
 # Variables specific to the headpose model
 
 HEADPOSE_MODEL_NAME="headpose"
-HEADPOSE_HANDLER_DIR="handlers/headpose_handler"
-HEADPOSE_HANDLER="handlers/headpose_handler/headposehandler.py"
+HEADPOSE_HANDLER_DIR="src/handlers/headpose_handler"
+HEADPOSE_HANDLER="$HEADPOSE_HANDLER_DIR/headposehandler.py"
 HEADPOSE_WEIGHTS_FILE="$MODEL_DIR/headpose/weights/headpose_weights.pth"
 HEADPOSE_EXTRA_FILES="$HEADPOSE_HANDLER_DIR/sixdrepnet360.py,$HEADPOSE_HANDLER_DIR/sixderpnet360_utils.py"
 
@@ -69,7 +69,8 @@ fi
 ################################### FACE DETECTION MODEL ####################################
 
 FACE_DETECTION_MODEL_NAME="face_detection"
-FACE_DETECTION_HANDLER="handlers/face_detection_handler/face_detection_handler.py"
+FACE_DETECTION_HANDLER_DIR="src/handlers/face_detection_handler"
+FACE_DETECTION_HANDLER="$FACE_DETECTION_HANDLER_DIR/face_detection_handler.py"
 FACE_DETECTION_WEIGHTS_FILE="$MODEL_DIR/face_detection/weights/yolov8n-face.pt"
 
 if [ -f "$FACE_DETECTION_WEIGHTS_FILE" ]; then
@@ -90,7 +91,7 @@ fi
 ################################### ITA CALCULATOR ####################################
 
 ITA_CALCULATION_MODEL_NAME="ita"
-ITA_CALCULATION_HANDLER_DIR="handlers/ita_handler"
+ITA_CALCULATION_HANDLER_DIR="src/handlers/ita_handler"
 ITA_CALCULATION_HANDLER="$ITA_CALCULATION_HANDLER_DIR/ita_handler.py"
 LANDMARKS_MODEL="$MODEL_DIR/ita/weights/lbfmodel.yaml"
 ITA_EXTRA_FILES="$ITA_CALCULATION_HANDLER_DIR/ita_calculator.py"

@@ -2,8 +2,14 @@ from ts.torch_handler.base_handler import BaseHandler
 from PIL import Image
 import io
 from typing import List
-from sixdrepnet360 import HeadPoseEstimator
 import os
+
+TS_IS_RUNNING = bool(os.environ.get("TS_IS_RUNNING"))
+
+if TS_IS_RUNNING:
+    from sixdrepnet360 import HeadPoseEstimator
+else:
+    from .sixdrepnet360 import HeadPoseEstimator
 
 
 class SixDRepNet360Handler(BaseHandler):

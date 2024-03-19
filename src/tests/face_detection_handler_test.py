@@ -1,6 +1,8 @@
 import pytest
 from unittest.mock import Mock
-from face_detection_handler import YOLOv8FaceDetectionHandler
+from src.handlers.face_detection_handler.face_detection_handler import (
+    YOLOv8FaceDetectionHandler,
+)
 
 
 @pytest.fixture
@@ -18,7 +20,7 @@ def load_image_as_request_input(image_path):
 
 
 def test_yolov8_face_detection_handler(mock_context):
-    image_path = "test_images/baldboi.jpg"
+    image_path = "test_images/not_bald.jpg"
     request_input = load_image_as_request_input(image_path)
 
     # Initialize handler instance and methods

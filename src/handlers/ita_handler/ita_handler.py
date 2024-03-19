@@ -3,7 +3,14 @@ from PIL import Image
 import io
 import numpy as np
 import cv2
-from ita_calculator import ITACalculator
+import os
+
+TS_IS_RUNNING = bool(os.environ.get("TS_IS_RUNNING"))
+
+if TS_IS_RUNNING:
+    from ita_calculator import ITACalculator
+else:
+    from .ita_calculator import ITACalculator
 
 
 class ITAHandler(BaseHandler):

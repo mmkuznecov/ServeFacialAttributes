@@ -58,7 +58,7 @@ After running the command, open a web browser and navigate to http://localhost:y
 Run the following command to test custom handler for classification with context mocking:
 
 ```bash
-pytest -v handlers/classifiers_handler/classifier_handler_test.py
+pytest -v src/tests
 ```
 
 ## Running with Docker

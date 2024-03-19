@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import Mock
-from ita_handler import ITAHandler
+from src.handlers.ita_handler.ita_handler import ITAHandler
 
 
 @pytest.fixture
@@ -18,7 +18,7 @@ def load_image_as_request_input(image_path):
 
 
 @pytest.mark.parametrize(
-    "image_path", ["test_images/baldboi.jpg", "test_images/hairboy.jpg"]
+    "image_path", ["test_images/bald.jpg", "test_images/not_bald.jpg"]
 )
 def test_ita_handler(mock_context, image_path):
     request_input = load_image_as_request_input(image_path)
