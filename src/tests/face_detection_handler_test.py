@@ -1,24 +1,20 @@
 import pytest
-from unittest.mock import Mock
 from src.handlers.face_detection_handler.face_detection_handler import (
     YOLOv8FaceDetectionHandler,
 )
+from src.utils.test_utils import load_image_as_request_input, mock_context
 
 
-@pytest.fixture
-def mock_context():
-    context = Mock()
-    context.system_properties = {"model_dir": "models/face_detection", "gpu_id": "0"}
-    context.manifest = {"model": {"serializedFile": "weights/yolov8n-face.pt"}}
-    return context
-
-
-def load_image_as_request_input(image_path):
-    with open(image_path, "rb") as img_file:
-        image_bytes = img_file.read()
-    return [{"body": image_bytes}]
-
-
+@pytest.mark.parametrize(
+    "mock_context",
+    [
+        {
+            "model_dir": "models/face_detection",
+            "serialized_file": "weights/yolov8n-face.pt",
+        }
+    ],
+    indirect=True,
+)
 def test_yolov8_face_detection_handler(mock_context):
     image_path = "test_images/not_bald.jpg"
     request_input = load_image_as_request_input(image_path)

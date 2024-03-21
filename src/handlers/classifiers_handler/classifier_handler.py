@@ -14,7 +14,7 @@ else:
     from .customresnetclassifier import CustomResnetClassifier
 
 
-class DynamicModelHandler(BaseHandler):
+class ResnetClassifierModelHandler(BaseHandler):
     """
     A dynamic handler for serving different ResNet50-based models
     for facial attribute prediction.
