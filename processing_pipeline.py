@@ -55,6 +55,7 @@ if __name__ == "__main__":
         "headpose",
         "race",
         "emotions",
+        "age"
     ]
 
     for image_path in images:

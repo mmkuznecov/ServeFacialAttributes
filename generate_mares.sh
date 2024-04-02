@@ -111,5 +111,28 @@ else
     echo "No weights file found for $ITA_CALCULATION_MODEL_NAME, skipping..."
 fi
 
+################################### MiVOLO AGE MODEL ####################################
+
+AGE_MODEL_NAME="age"
+AGE_HANDLER_DIR="src/handlers/mivolo_handler"
+AGE_HANDLER="$AGE_HANDLER_DIR/mivolo_handler.py"
+AGE_WEIGHTS="$MODEL_DIR/age/weights/model_age_utk_4.23.pth.tar"
+AGE_EXTRA_FILES="$AGE_HANDLER_DIR/create_timm_model.py,$AGE_HANDLER_DIR/cross_bottleneck_attn.py,$AGE_HANDLER_DIR/mi_volo.py,$AGE_HANDLER_DIR/mivolo_model.py"
+
+if [ -f "$AGE_WEIGHTS" ]; then
+    torch-model-archiver --model-name $AGE_MODEL_NAME \
+                         --version 1.0 \
+                         --model-file $AGE_HANDLER \
+                         --serialized-file $AGE_WEIGHTS \
+                         --handler $AGE_HANDLER \
+                         --extra-files  $AGE_EXTRA_FILES \
+                         --export-path $STORE_DIR \
+                         --force
+
+    echo "Generated MAR file for $AGE_MODEL_NAME at $STORE_DIR/$AGE_MODEL_NAME.mar"
+else
+    echo "No weights file found for $AGE_MODEL_NAME, skipping..."
+fi
+
 
 echo "MAR file generation complete."
