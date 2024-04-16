@@ -93,7 +93,7 @@ fi
 ITA_CALCULATION_MODEL_NAME="ita"
 ITA_CALCULATION_HANDLER_DIR="src/handlers/ita_handler"
 ITA_CALCULATION_HANDLER="$ITA_CALCULATION_HANDLER_DIR/ita_handler.py"
-LANDMARKS_MODEL="$MODEL_DIR/ita/weights/lbfmodel.yaml"
+LANDMARKS_MODEL="$MODEL_DIR/ita/weights/shape_predictor_81_face_landmarks.dat"
 ITA_EXTRA_FILES="$ITA_CALCULATION_HANDLER_DIR/ita_calculator.py"
 
 if [ -f "$LANDMARKS_MODEL" ]; then
