@@ -42,7 +42,7 @@ class ITAHandler(BaseHandler):
             images.append(image)
         return images
 
-    def inference(self, imgs, *args, **kwargs):
+    def inference(self, imgs):
         ita_values = []
         for img in imgs:
             ita = self.ita_calculator.calculate_ita(img)

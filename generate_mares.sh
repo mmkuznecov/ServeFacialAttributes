@@ -93,7 +93,7 @@ fi
 ITA_CALCULATION_MODEL_NAME="ita"
 ITA_CALCULATION_HANDLER_DIR="src/handlers/ita_handler"
 ITA_CALCULATION_HANDLER="$ITA_CALCULATION_HANDLER_DIR/ita_handler.py"
-LANDMARKS_MODEL="$MODEL_DIR/ita/weights/shape_predictor_81_face_landmarks.dat"
+LANDMARKS_MODEL="$MODEL_DIR/dlib/weights/shape_predictor_81_face_landmarks.dat" # reused in dlib segmentator
 ITA_EXTRA_FILES="$ITA_CALCULATION_HANDLER_DIR/ita_calculator.py"
 
 if [ -f "$LANDMARKS_MODEL" ]; then
@@ -134,5 +134,27 @@ else
     echo "No weights file found for $AGE_MODEL_NAME, skipping..."
 fi
 
+################################### DLIB SEGMENTATION MODEL ####################################
+
+DLIB_SEGMENTATION_MODEL_NAME="dlib_face_segmentation"
+DLIB_SEGMENTATION_DIR="src/handlers/dlib_segmentator_handler"
+DLIB_SEGMENTATION_HANDLER="$DLIB_SEGMENTATION_DIR/dlib_segmentator_handler.py"
+DLIB_SEGMENTATION_EXTRA_FILES="$DLIB_SEGMENTATION_DIR/dlib_segmentator.py"
+
+
+if [ -f "$LANDMARKS_MODEL" ]; then
+    torch-model-archiver --model-name $DLIB_SEGMENTATION_MODEL_NAME \
+                         --version 1.0 \
+                         --model-file $DLIB_SEGMENTATION_HANDLER \
+                         --serialized-file $LANDMARKS_MODEL \
+                         --handler $DLIB_SEGMENTATION_HANDLER \
+                         --extra-files  $DLIB_SEGMENTATION_EXTRA_FILES \
+                         --export-path $STORE_DIR \
+                         --force
+
+    echo "Generated MAR file for $DLIB_SEGMENTATION_MODEL_NAME at $STORE_DIR/$DLIB_SEGMENTATION_MODEL_NAME.mar"
+else
+    echo "No weights file found for $DLIB_SEGMENTATION_MODEL_NAME, skipping..."
+fi
 
 echo "MAR file generation complete."

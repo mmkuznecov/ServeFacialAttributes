@@ -5,7 +5,12 @@ from src.utils.test_utils import load_image_as_request_input, mock_context
 
 @pytest.mark.parametrize(
     "mock_context",
-    [{"model_dir": "models/ita", "serialized_file": "weights/lbfmodel.yaml"}],
+    [
+        {
+            "model_dir": "models/dlib",
+            "serialized_file": "weights/shape_predictor_81_face_landmarks.dat",
+        }
+    ],
     indirect=True,
 )
 @pytest.mark.parametrize(
