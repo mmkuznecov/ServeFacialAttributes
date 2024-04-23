@@ -157,4 +157,27 @@ else
     echo "No weights file found for $DLIB_SEGMENTATION_MODEL_NAME, skipping..."
 fi
 
+################################### DEEPLABV3PLUS SEGMENTATION MODEL ####################################
+
+DEEPLAB_SEGMENTATION_MODEL_NAME="deeplab_face_segmentation"
+DEEPLAB_SEGMENTATION_DIR="src/handlers/deeplab_segmentator_handler"
+DEEPLAB_SEGMENTATION_HANDLER="$DEEPLAB_SEGMENTATION_DIR/deeplab_segmentator_handler.py"
+DEEPLAB_WEIGHTS="$MODEL_DIR/deeplabv3_face/weights/deeplabv3plus_celebamask.pth"
+DEEPLAB_SEGMENTATION_EXTRA_FILES="$DEEPLAB_SEGMENTATION_DIR/deeplab_segmentator.py"
+
+if [ -f "$DEEPLAB_WEIGHTS" ]; then
+    torch-model-archiver --model-name $DEEPLAB_SEGMENTATION_MODEL_NAME \
+                         --version 1.0 \
+                         --model-file $DEEPLAB_SEGMENTATION_HANDLER \
+                         --serialized-file $DEEPLAB_WEIGHTS \
+                         --handler $DEEPLAB_SEGMENTATION_HANDLER \
+                         --extra-files  $DEEPLAB_SEGMENTATION_EXTRA_FILES \
+                         --export-path $STORE_DIR \
+                         --force
+
+    echo "Generated MAR file for $DEEPLAB_SEGMENTATION_MODEL_NAME at $STORE_DIR/$DEEPLAB_SEGMENTATION_MODEL_NAME.mar"
+else
+    echo "No weights file found for $DEEPLAB_SEGMENTATION_MODEL_NAME, skipping..."
+fi
+
 echo "MAR file generation complete."
