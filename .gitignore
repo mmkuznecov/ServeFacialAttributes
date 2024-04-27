@@ -10,3 +10,4 @@ __pycache__
 face_segmentation_pipeline.py
 deeplab_face_segmentation.py
 /segmentation_results_deep_lab
+skincolor_pipeline.py

@@ -180,4 +180,21 @@ else
     echo "No weights file found for $DEEPLAB_SEGMENTATION_MODEL_NAME, skipping..."
 fi
 
+################################### SKINCOLOR CALCULATOR ####################################
+
+SKINCOLOR_CALCULATOR_NAME="apparent_skincolor"
+SKINCOLOR_DIR="src/handlers/skincolor_handler"
+SKINCOLOR_HANDLER="$SKINCOLOR_DIR/skincolor_handler.py"
+SKINCOLOR_EXTRA_FILES="$SKINCOLOR_DIR/skincolor_calculator.py"
+
+torch-model-archiver --model-name $SKINCOLOR_CALCULATOR_NAME \
+                         --version 1.0 \
+                         --model-file $SKINCOLOR_HANDLER \
+                         --handler $SKINCOLOR_HANDLER \
+                         --extra-files  $SKINCOLOR_EXTRA_FILES \
+                         --export-path $STORE_DIR \
+                         --force
+
+echo "Generated MAR file for $SKINCOLOR_CALCULATOR_NAME at $STORE_DIR/$SKINCOLOR_CALCULATOR_NAME.mar"
+
 echo "MAR file generation complete."
