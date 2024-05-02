@@ -79,7 +79,8 @@ if __name__ == "__main__":
     images_dir = "test_images"
     output_dir = "segmentation_results"
     os.makedirs(output_dir, exist_ok=True)
-    images = [os.path.join(images_dir, img_path) for img_path in os.listdir(images_dir)]
+    images_list = ['bald.jpg', 'no_face.jpg', 'not_bald.jpg']
+    images = [os.path.join(images_dir, img_path) for img_path in images_list]
     preprocessing_models = ["face_detection"]
     models_no_crop = [
         "beard",

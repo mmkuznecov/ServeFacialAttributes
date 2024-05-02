@@ -8,6 +8,7 @@ This project offers a suite of services similar to Microsoft Cognitive Services,
 - **26.04.2024** - Face segmentation services are added. Two alternatives are available:
     1. The "classical" approach, built upon [dlib facial landmarks predictor with 81 points](https://github.com/codeniko/shape_predictor_81_face_landmarks), which uses cropping for segmentation.
     2. The advanced approach, utilizing the DeepLabV3Plus architecture, trained on the [CelebAMask-HQ](https://github.com/switchablenorms/CelebAMask-HQ) dataset for enhanced performance.
+- **02.05.2024** - Face skin color evaluator build using method provided in [Beyond Skin Tone: A Multidimensional Measure of Apparent Skin Color](https://arxiv.org/abs/2309.05148) paper.
 
 ## Getting Started
 
@@ -127,3 +128,4 @@ The table below summarizes the currently implemented models in the service:
 | `age` | Regression | Estimated age in years | [SOTA](https://paperswithcode.com/task/age-estimation) regression model built upon [MiVOLO](https://github.com/WildChlamydia/MiVOLO) project for age estimation. |
 | `dlib_face_segmentation` | Segmentation | Base64-encoded segmentation mask | The "classical" approach, built upon [dlib facial landmarks predictor with 81 points](https://github.com/codeniko/shape_predictor_81_face_landmarks), which uses cropping for segmentation. |
 | `deeplab_face_segmentation` | Segmentation | Base64-encoded segmentation mask | The advanced approach, utilizing the DeepLabV3Plus architecture, trained on the [CelebAMask-HQ](https://github.com/switchablenorms/CelebAMask-HQ) dataset for enhanced performance. |
+| `apparent_skincolor`  | Calculation    | Luminance (lum), hue, luminance standard deviation (lum_std), hue standard deviation (hue_std), a* values, b* values | Face skin color evaluator built using the method provided in [Beyond Skin Tone: A Multidimensional Measure of Apparent Skin Color](https://arxiv.org/abs/2309.05148) paper. | 

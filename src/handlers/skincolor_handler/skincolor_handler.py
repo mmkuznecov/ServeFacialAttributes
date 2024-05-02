@@ -1,5 +1,6 @@
 from ts.torch_handler.base_handler import BaseHandler
 from PIL import Image
+import base64
 import io
 import numpy as np
 import cv2
@@ -24,18 +25,26 @@ class SkinColorHandler(BaseHandler):
     def preprocess(self, data):
         input_data = []
         for request_data in data:
-            # Extract image and mask data from the request
-            image_data = request_data.get("image")
-            mask_data = request_data.get("mask")
+            # Extract image and mask data from the request body
+            body = request_data.get("body")
+            if body is None:
+                raise ValueError("Request body is missing")
 
-            if image_data is None or mask_data is None:
+            image_base64 = body.get("image")
+            mask_base64 = body.get("mask")
+
+            if image_base64 is None or mask_base64 is None:
                 raise ValueError(
-                    "Both 'image' and 'mask' must be provided in the request."
+                    "Both 'image' and 'mask' must be provided in the request body."
                 )
 
-            # Convert image and mask data to PIL Image
-            image = Image.open(io.BytesIO(image_data))
-            mask = Image.open(io.BytesIO(mask_data))
+            # Decode base64 strings to bytes
+            image_bytes = base64.b64decode(image_base64)
+            mask_bytes = base64.b64decode(mask_base64)
+
+            # Convert image and mask bytes to PIL Image
+            image = Image.open(io.BytesIO(image_bytes))
+            mask = Image.open(io.BytesIO(mask_bytes))
 
             # Convert PIL Image to numpy array
             image = np.array(image)
@@ -63,9 +72,13 @@ class SkinColorHandler(BaseHandler):
             mask = data["mask"]
             result = self.skin_color_predictor.predict(image, mask)
             results.append(result)
-        return results
+        return result
 
     def postprocess(self, inference_output):
+        if isinstance(inference_output, dict):
+            # If inference_output is a single dictionary, wrap it in a list
+            inference_output = [inference_output]
+
         processed_output = [
             {
                 "lum": result["lum"],
