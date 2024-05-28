@@ -16,7 +16,7 @@ RUN apt-get update && \
 COPY . .
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r deployment/requirements.txt
+RUN pip install --no-cache-dir -r deployment/docker_requirements.txt
 
 # Download model weights and prepare the model archives
 RUN python utils/download.py && bash generate_mares.sh
