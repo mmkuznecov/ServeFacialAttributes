@@ -197,4 +197,28 @@ torch-model-archiver --model-name $SKINCOLOR_CALCULATOR_NAME \
 
 echo "Generated MAR file for $SKINCOLOR_CALCULATOR_NAME at $STORE_DIR/$SKINCOLOR_CALCULATOR_NAME.mar"
 
+
+################################### ARCFACE MODEL ####################################
+
+ARCFACE_MODEL_NAME="arcface"
+ARCFACE_DIR="src/handlers/arcface_handler"
+ARCFACE_HANDLER="$ARCFACE_DIR/arcface_handler.py"
+ARCFACE_WEIGHTS="$MODEL_DIR/arcface/weights/resnet18_110_arcface.pth"
+ARCFACE_EXTRA_FILES="$ARCFACE_DIR/arcface_model.py,$ARCFACE_DIR/arcface_resnet.py"
+
+if [ -f "$DEEPLAB_WEIGHTS" ]; then
+    torch-model-archiver --model-name $ARCFACE_MODEL_NAME \
+                         --version 1.0 \
+                         --model-file $ARCFACE_HANDLER \
+                         --serialized-file $ARCFACE_WEIGHTS \
+                         --handler $ARCFACE_HANDLER \
+                         --extra-files  $ARCFACE_EXTRA_FILES \
+                         --export-path $STORE_DIR \
+                         --force
+
+    echo "Generated MAR file for $ARCFACE_MODEL_NAME at $STORE_DIR/$ARCFACE_MODEL_NAME.mar"
+else
+    echo "No weights file found for $ARCFACE_MODEL_NAME, skipping..."
+fi
+
 echo "MAR file generation complete."

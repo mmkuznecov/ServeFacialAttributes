@@ -41,4 +41,7 @@ class ResnetArcfaceHandler(BaseHandler):
         return outputs
 
     def postprocess(self, data):
-        return data
+        result = []
+        for vector in data:
+            result.append(vector.tolist())
+        return result

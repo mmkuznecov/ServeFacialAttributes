@@ -92,6 +92,7 @@ if __name__ == "__main__":
         "headpose",
         "race",
         "emotions",
+        "arcface"
     ]
     models_crop = ["age"]
     segmentation_models = ["dlib_face_segmentation", "deeplab_face_segmentation"]
