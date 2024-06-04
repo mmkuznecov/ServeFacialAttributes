@@ -117,7 +117,9 @@ AGE_MODEL_NAME="age"
 AGE_HANDLER_DIR="src/handlers/mivolo_handler"
 AGE_HANDLER="$AGE_HANDLER_DIR/mivolo_handler.py"
 AGE_WEIGHTS="$MODEL_DIR/age/weights/model_age_utk_4.23.pth.tar"
-AGE_EXTRA_FILES="$AGE_HANDLER_DIR/create_timm_model.py,$AGE_HANDLER_DIR/cross_bottleneck_attn.py,$AGE_HANDLER_DIR/mi_volo.py,$AGE_HANDLER_DIR/mivolo_model.py"
+AGE_SPECIFIC_REQUIREMENTS="age_requirements.txt"
+AGE_REQUIREMENTS_FILE="$MODEL_DIR/age/$AGE_SPECIFIC_REQUIREMENTS"
+AGE_EXTRA_FILES="$AGE_HANDLER_DIR/create_timm_model.py,$AGE_HANDLER_DIR/cross_bottleneck_attn.py,$AGE_HANDLER_DIR/mi_volo.py,$AGE_HANDLER_DIR/mivolo_model.py,$AGE_REQUIREMENTS_FILE"
 
 if [ -f "$AGE_WEIGHTS" ]; then
     torch-model-archiver --model-name $AGE_MODEL_NAME \
@@ -127,6 +129,7 @@ if [ -f "$AGE_WEIGHTS" ]; then
                          --handler $AGE_HANDLER \
                          --extra-files  $AGE_EXTRA_FILES \
                          --export-path $STORE_DIR \
+                         --requirements-file $AGE_REQUIREMENTS_FILE \
                          --force
 
     echo "Generated MAR file for $AGE_MODEL_NAME at $STORE_DIR/$AGE_MODEL_NAME.mar"

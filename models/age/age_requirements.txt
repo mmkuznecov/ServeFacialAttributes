@@ -1,0 +1,2 @@
+ultralytics==8.1.0
+timm==0.8.13.dev0
