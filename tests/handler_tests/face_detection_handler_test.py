@@ -2,7 +2,7 @@ import pytest
 from src.handlers.face_detection_handler.face_detection_handler import (
     YOLOv8FaceDetectionHandler,
 )
-from src.utils.test_utils import load_image_as_request_input, mock_context
+from ..test_utils import load_image_as_request_input, mock_context
 
 
 @pytest.mark.parametrize(
@@ -16,7 +16,7 @@ from src.utils.test_utils import load_image_as_request_input, mock_context
     indirect=True,
 )
 def test_yolov8_face_detection_handler(mock_context):
-    image_path = "test_images/not_bald.jpg"
+    image_path = "tests/test_images/not_bald.jpg"
     request_input = load_image_as_request_input(image_path)
 
     # Initialize handler instance and methods

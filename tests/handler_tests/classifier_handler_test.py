@@ -2,7 +2,7 @@ import pytest
 from src.handlers.classifiers_handler.classifier_handler import (
     ResnetClassifierModelHandler,
 )
-from src.utils.test_utils import load_image_as_request_input, mock_context
+from ..test_utils import load_image_as_request_input, mock_context
 import os
 
 
@@ -26,7 +26,7 @@ import os
     indirect=True,
 )
 def test_handler_with_mock(mock_context):
-    image_path = os.path.join("test_images", "not_bald.jpg")
+    image_path = os.path.join("tests/test_images", "not_bald.jpg")
     req_input = load_image_as_request_input(image_path)
     handler_instance = ResnetClassifierModelHandler()
     handler_instance.initialize(mock_context)

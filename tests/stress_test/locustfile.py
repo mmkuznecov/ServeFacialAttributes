@@ -25,8 +25,8 @@ class FacialAttributesUser(HttpUser):
         """On start, list all available models and images"""
         self.models = MODELS_LIST  # Assuming this retrieves model names correctly
         self.images = [
-            os.path.join("test_images", img_path)
-            for img_path in os.listdir("test_images")
+            os.path.join("tests/test_images", img_path)
+            for img_path in os.listdir("tests/test_images")
             if img_path.lower().endswith((".png", ".jpg", ".jpeg", ".bmp"))
         ]
 

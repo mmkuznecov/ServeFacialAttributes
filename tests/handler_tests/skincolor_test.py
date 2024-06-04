@@ -1,12 +1,12 @@
 import pytest
 import numpy as np
 from src.handlers.skincolor_handler.skincolor_handler import SkinColorHandler
-from src.utils.test_utils import load_image_as_request_input, mock_context
+from ..test_utils import load_image_as_request_input, mock_context
 
 @pytest.mark.parametrize(
     "image_path, mask_path",
     [
-        ("test_images/skincolor_samples/00000.png", "test_images/skincolor_samples/00000_mask.png"),
+        ("tests/test_images/skincolor_samples/00000.png", "tests/test_images/skincolor_samples/00000_mask.png"),
     ],
 )
 def test_skin_color_handler(mock_context, image_path, mask_path):

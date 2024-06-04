@@ -76,7 +76,7 @@ def save_colored_mask(mask_data, output_path, use_color_map=True):
 
 if __name__ == "__main__":
     service_url = "http://localhost:8080/predictions/"
-    images_dir = "test_images"
+    images_dir = "tests/test_images"
     output_dir = "segmentation_results"
     os.makedirs(output_dir, exist_ok=True)
     images_list = ['bald.jpg', 'no_face.jpg', 'not_bald.jpg']

@@ -4,30 +4,30 @@ import base64
 import cv2
 import numpy as np
 from PIL import Image
-
-from src.handlers.deeplab_segmentator_handler.deeplab_segmentator_handler import (
-    FaceSegmentationHandler
+from src.handlers.dlib_segmentator_handler.dlib_segmentator_handler import (
+    DlibSegmentatorHandler,
 )
-from src.utils.test_utils import load_image_as_request_input, mock_context
+from ..test_utils import load_image_as_request_input, mock_context
 
 
 @pytest.mark.parametrize(
     "mock_context",
     [
         {
-            "model_dir": "models/deeplabv3_face",
-            "serialized_file": "weights/deeplabv3plus_celebamask.pth",
+            "model_dir": "models/dlib",
+            "serialized_file": "weights/shape_predictor_81_face_landmarks.dat",
         }
     ],
     indirect=True,
 )
 @pytest.mark.parametrize(
-    "image_path", ["test_images/bald.jpg", "test_images/not_bald.jpg"]
+    "image_path", ["tests/test_images/bald.jpg", "tests/test_images/not_bald.jpg"]
 )
-def test_face_segmentation_handler(mock_context, image_path):
+def test_dlib_segmentator_handler(mock_context, image_path):
     request_input = load_image_as_request_input(image_path)
+
     # Initialize handler instance
-    handler = FaceSegmentationHandler()
+    handler = DlibSegmentatorHandler()
     handler.initialize(mock_context)
 
     preprocessed_input = handler.preprocess(request_input)
@@ -51,17 +51,28 @@ def test_face_segmentation_handler(mock_context, image_path):
         mask_array = np.frombuffer(decoded_mask, dtype=np.uint8)
         mask = cv2.imdecode(mask_array, cv2.IMREAD_UNCHANGED)
 
+        print((mask == 62).shape)
+
         # Check if the size of the original image and segmented mask are equal
         original_image = preprocessed_input[0]
         assert (
-            mask.shape[:2] == original_image.size[::-1]
+            mask.shape[:2] == original_image.shape[:2]
         ), "Size of the segmented mask should match the original image"
 
-        # Check if all expected colors are present in the segmented mask
-        unique_colors = set(tuple(color) for m2d in mask for color in m2d)
-        expected_colors = set(handler.model.CLASS_COLOR_MAP.values())
-        assert (
-            unique_colors.issubset(expected_colors)
-        ), "Segmented mask should only contain expected colors"
+        # Check if all pixel types are present in the segmented mask
+        unique_pixels = np.unique(mask)
+        expected_pixels = [
+            0,
+            20,
+            30,
+            40,
+            50,
+            60,
+            70,
+            80,
+        ]  # Assuming these are the expected pixel values
+        assert set(unique_pixels) == set(
+            expected_pixels
+        ), "Segmented mask should contain all expected pixel types"
 
-    print(f"Test passed for image: {image_path}")
+        print(f"Test passed for image: {image_path}")

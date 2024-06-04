@@ -1,6 +1,6 @@
 import pytest
 from src.handlers.headpose_handler.headposehandler import SixDRepNet360Handler
-from src.utils.test_utils import load_image_as_request_input, mock_context
+from ..test_utils import load_image_as_request_input, mock_context
 import os
 
 
@@ -15,7 +15,7 @@ import os
     indirect=True,
 )
 def test_headpose_handler_with_real_weights(mock_context):
-    image_path = os.path.join("test_images", "not_bald.jpg")
+    image_path = os.path.join("tests/test_images", "not_bald.jpg")
     req_input = load_image_as_request_input(image_path)
     handler_instance = SixDRepNet360Handler()
     handler_instance.initialize(mock_context)

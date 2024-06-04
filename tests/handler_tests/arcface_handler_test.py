@@ -1,6 +1,6 @@
 import pytest
 import os
-from src.utils.test_utils import load_image_as_request_input, mock_context
+from ..test_utils import load_image_as_request_input, mock_context
 from src.handlers.arcface_handler.arcface_handler import ResnetArcfaceHandler
 
 @pytest.mark.parametrize(
@@ -15,7 +15,7 @@ from src.handlers.arcface_handler.arcface_handler import ResnetArcfaceHandler
 )
 def test_resnet_arcface_handler_with_real_weights(mock_context):
     # Set up the image input
-    image_path = os.path.join("test_images", "not_bald.jpg")  # Adjust the image name/path as needed
+    image_path = os.path.join("tests/test_images", "not_bald.jpg")  # Adjust the image name/path as needed
     req_input = load_image_as_request_input(image_path)
     
     # Initialize the handler
@@ -28,7 +28,7 @@ def test_resnet_arcface_handler_with_real_weights(mock_context):
     final_result = handler_instance.postprocess(embeddings)
     
     # Assertions to validate outputs; adjust according to what your model outputs
-    assert final_result.shape[1] == 512
+    assert len(final_result[0]) == 512
     
     # Optionally, you can print the result to help in debugging
     print("Final Result for model:", mock_context.system_properties["model_dir"], final_result)

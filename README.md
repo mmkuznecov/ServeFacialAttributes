@@ -66,7 +66,7 @@ After running the command, open a web browser and navigate to http://localhost:y
 Run the following command to test custom handler for classification with context mocking:
 
 ```bash
-pytest -v src/tests
+pytest -vv tests/handler_tests
 ```
 
 ## Running with Docker

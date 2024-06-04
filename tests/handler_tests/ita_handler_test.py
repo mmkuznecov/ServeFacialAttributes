@@ -1,6 +1,6 @@
 import pytest
 from src.handlers.ita_handler.ita_handler import ITAHandler
-from src.utils.test_utils import load_image_as_request_input, mock_context
+from ..test_utils import load_image_as_request_input, mock_context
 
 
 @pytest.mark.parametrize(
@@ -14,7 +14,7 @@ from src.utils.test_utils import load_image_as_request_input, mock_context
     indirect=True,
 )
 @pytest.mark.parametrize(
-    "image_path", ["test_images/bald.jpg", "test_images/not_bald.jpg"]
+    "image_path", ["tests/test_images/bald.jpg", "tests/test_images/not_bald.jpg"]
 )
 def test_ita_handler(mock_context, image_path):
     request_input = load_image_as_request_input(image_path)
