@@ -9,6 +9,7 @@ This project offers a suite of services similar to Microsoft Cognitive Services,
     1. The "classical" approach, built upon [dlib facial landmarks predictor with 81 points](https://github.com/codeniko/shape_predictor_81_face_landmarks), which uses cropping for segmentation.
     2. The advanced approach, utilizing the DeepLabV3Plus architecture, trained on the [CelebAMask-HQ](https://github.com/switchablenorms/CelebAMask-HQ) dataset for enhanced performance.
 - **02.05.2024** - Face skin color evaluator build using method provided in [Beyond Skin Tone: A Multidimensional Measure of Apparent Skin Color](https://arxiv.org/abs/2309.05148) paper.
+- **31.05.2024** - ArcFace model added. Built upon [Pytorch model](https://github.com/ronghuaiyang/arcface-pytorch).
 
 ## Getting Started
 
@@ -129,3 +130,4 @@ The table below summarizes the currently implemented models in the service:
 | `dlib_face_segmentation` | Segmentation | Base64-encoded segmentation mask | The "classical" approach, built upon [dlib facial landmarks predictor with 81 points](https://github.com/codeniko/shape_predictor_81_face_landmarks), which uses cropping for segmentation. |
 | `deeplab_face_segmentation` | Segmentation | Base64-encoded segmentation mask | The advanced approach, utilizing the DeepLabV3Plus architecture, trained on the [CelebAMask-HQ](https://github.com/switchablenorms/CelebAMask-HQ) dataset for enhanced performance. |
 | `apparent_skincolor`  | Calculation    | Luminance (lum), hue, luminance standard deviation (lum_std), hue standard deviation (hue_std), a* values, b* values | Face skin color evaluator built using the method provided in [Beyond Skin Tone: A Multidimensional Measure of Apparent Skin Color](https://arxiv.org/abs/2309.05148) paper. | 
+| `arcface` | Face Recognition | 512-dimensional face embedding vector | [ArcFace](https://arxiv.org/abs/1801.07698) model for face recognition, built upon the PyTorch implementation. Can be used for face verification and identification tasks. |
