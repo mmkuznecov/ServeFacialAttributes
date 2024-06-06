@@ -3,10 +3,14 @@ import numpy as np
 from src.handlers.skincolor_handler.skincolor_handler import SkinColorHandler
 from ..test_utils import load_image_as_request_input, mock_context
 
+
 @pytest.mark.parametrize(
     "image_path, mask_path",
     [
-        ("tests/test_images/skincolor_samples/00000.png", "tests/test_images/skincolor_samples/00000_mask.png"),
+        (
+            "tests/test_images/skincolor_samples/00000.png",
+            "tests/test_images/skincolor_samples/00000_mask.png",
+        ),
     ],
 )
 def test_skin_color_handler(mock_context, image_path, mask_path):
@@ -17,7 +21,7 @@ def test_skin_color_handler(mock_context, image_path, mask_path):
         {
             "body": {
                 "image": image_request_input[0]["body"],
-                "mask": mask_request_input[0]["body"]
+                "mask": mask_request_input[0]["body"],
             }
         }
     ]
@@ -40,14 +44,26 @@ def test_skin_color_handler(mock_context, image_path, mask_path):
 
     assert isinstance(postprocessed_output[0]["lum"], float), "'lum' should be a float"
     assert isinstance(postprocessed_output[0]["hue"], float), "'hue' should be a float"
-    assert isinstance(postprocessed_output[0]["lum_std"], float), "'lum_std' should be a float"
-    assert isinstance(postprocessed_output[0]["hue_std"], float), "'hue_std' should be a float"
-    assert isinstance(postprocessed_output[0]["a_values"], list), "'a_values' should be a list"
-    assert isinstance(postprocessed_output[0]["b_values"], list), "'b_values' should be a list"
+    assert isinstance(
+        postprocessed_output[0]["lum_std"], float
+    ), "'lum_std' should be a float"
+    assert isinstance(
+        postprocessed_output[0]["hue_std"], float
+    ), "'hue_std' should be a float"
+    assert isinstance(
+        postprocessed_output[0]["a_values"], list
+    ), "'a_values' should be a list"
+    assert isinstance(
+        postprocessed_output[0]["b_values"], list
+    ), "'b_values' should be a list"
 
     # Verify value ranges based on the information from the supplementary material
-    assert 0 <= postprocessed_output[0]["lum"] <= 100, "'lum' should be in the range [0, 100]"
-    assert 0 <= postprocessed_output[0]["hue"] <= 90, "'hue' should be in the range [0, 90]"
+    assert (
+        0 <= postprocessed_output[0]["lum"] <= 100
+    ), "'lum' should be in the range [0, 100]"
+    assert (
+        0 <= postprocessed_output[0]["hue"] <= 90
+    ), "'hue' should be in the range [0, 90]"
 
     # Verify skin tone and hue categorization
     lum_threshold = 60
