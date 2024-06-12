@@ -1,7 +1,7 @@
 import pytest
 import torch
 from src.handlers.mivolo_handler.mivolo_handler import MiVOLOHandler
-from src.utils.test_utils import load_image_as_request_input, mock_context
+from ..test_utils import load_image_as_request_input, mock_context
 
 
 @pytest.mark.parametrize(
