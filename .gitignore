@@ -12,3 +12,4 @@ deeplab_face_segmentation.py
 /segmentation_results_deep_lab
 skincolor_pipeline.py
 skincolor_segmentation_pipeline.py
+.nox/

@@ -3,21 +3,38 @@ import numpy as np
 from src.handlers.skincolor_handler.skincolor_handler import SkinColorHandler
 from ..test_utils import load_image_as_request_input, mock_context
 
+MOCK_PARAMS = [
+    {
+        "model_dir": "models/skincolor",
+        "serialized_file": "weights/skincolor_weights.pth",
+    }
+]
 
-@pytest.mark.parametrize(
-    "image_path, mask_path",
-    [
-        (
-            "tests/test_images/skincolor_samples/00000.png",
-            "tests/test_images/skincolor_samples/00000_mask.png",
-        ),
-    ],
+IMAGE_PATHS = [
+    (
+        "tests/test_images/skincolor_samples/00000.png",
+        "tests/test_images/skincolor_samples/00000_mask.png",
+    ),
+]
+
+parametrize_mock_context = pytest.mark.parametrize(
+    "mock_context", MOCK_PARAMS, indirect=True
 )
-def test_skin_color_handler(mock_context, image_path, mask_path):
-    # Load image and mask as request input
+parametrize_image_path = pytest.mark.parametrize("image_path, mask_path", IMAGE_PATHS)
+
+
+@pytest.fixture
+def handler_instance(mock_context):
+    handler = SkinColorHandler()
+    handler.initialize(mock_context)
+    return handler
+
+
+@pytest.fixture
+def req_input(image_path, mask_path):
     image_request_input = load_image_as_request_input(image_path, encode_base64=True)
     mask_request_input = load_image_as_request_input(mask_path, encode_base64=True)
-    request_input = [
+    return [
         {
             "body": {
                 "image": image_request_input[0]["body"],
@@ -26,15 +43,43 @@ def test_skin_color_handler(mock_context, image_path, mask_path):
         }
     ]
 
-    # Initialize handler instance
-    handler = SkinColorHandler()
-    handler.initialize(mock_context)
 
-    preprocessed_input = handler.preprocess(request_input)
-    inference_output = handler.inference(preprocessed_input)
-    postprocessed_output = handler.postprocess(inference_output)
+@pytest.fixture
+def preprocessed_image(handler_instance, req_input):
+    return handler_instance.preprocess(req_input)
 
-    # Assertions to validate the output
+
+@pytest.fixture
+def inference_output(handler_instance, preprocessed_image):
+    return handler_instance.inference(preprocessed_image)
+
+
+@parametrize_mock_context
+@parametrize_image_path
+def test_preprocess(handler_instance, req_input):
+    preprocessed_image = handler_instance.preprocess(req_input)
+    assert len(preprocessed_image) == 1
+    assert "image" in preprocessed_image[0]
+    assert "mask" in preprocessed_image[0]
+    assert isinstance(preprocessed_image[0]["image"], np.ndarray)
+    assert isinstance(preprocessed_image[0]["mask"], np.ndarray)
+    print("Preprocessed data:", preprocessed_image)
+
+
+@parametrize_mock_context
+@parametrize_image_path
+def test_inference(handler_instance, preprocessed_image):
+    inference_output = handler_instance.inference(preprocessed_image)
+    assert isinstance(inference_output, dict), "Inference output should be a dictionary"
+    assert "lum" in inference_output, "Inference output should contain 'lum'"
+    assert "hue" in inference_output, "Inference output should contain 'hue'"
+    print("Inference result:", inference_output)
+
+
+@parametrize_mock_context
+@parametrize_image_path
+def test_postprocess(handler_instance, inference_output):
+    postprocessed_output = handler_instance.postprocess(inference_output)
     assert isinstance(postprocessed_output, list), "Output should be a list"
     assert len(postprocessed_output) > 0, "Output list should not be empty"
 
@@ -57,7 +102,6 @@ def test_skin_color_handler(mock_context, image_path, mask_path):
         postprocessed_output[0]["b_values"], list
     ), "'b_values' should be a list"
 
-    # Verify value ranges based on the information from the supplementary material
     assert (
         0 <= postprocessed_output[0]["lum"] <= 100
     ), "'lum' should be in the range [0, 100]"
@@ -65,20 +109,10 @@ def test_skin_color_handler(mock_context, image_path, mask_path):
         0 <= postprocessed_output[0]["hue"] <= 90
     ), "'hue' should be in the range [0, 90]"
 
-    # Verify skin tone and hue categorization
     lum_threshold = 60
     hue_threshold = 55
-    if postprocessed_output[0]["lum"] > lum_threshold:
-        skin_tone = "light"
-    else:
-        skin_tone = "dark"
+    skin_tone = "light" if postprocessed_output[0]["lum"] > lum_threshold else "dark"
+    skin_hue = "red" if postprocessed_output[0]["hue"] < hue_threshold else "yellow"
 
-    if postprocessed_output[0]["hue"] < hue_threshold:
-        skin_hue = "red"
-    else:
-        skin_hue = "yellow"
-
-    print(
-        f"Test passed for image: {image_path}, mask: {mask_path} with output: {postprocessed_output[0]}"
-    )
+    print("Postprocessed data:", postprocessed_output)
     print(f"Skin tone: {skin_tone}, Skin hue: {skin_hue}")
