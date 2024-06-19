@@ -70,6 +70,18 @@ Run the following command to test custom handler for classification with context
 pytest -vv tests/handler_tests
 ```
 
+If you want to check tests code coverage, you can also run:
+
+```bash
+pytest --cov=src --cov-report=term-missing -vv tests/handler_tests
+```
+
+If you want to get an interactive `.html` coverage report run:
+
+```bash
+pytest --cov=src --cov-report=term-missing --cov-report=html -vv tests/handler_tests/
+```
+
 ## Running with Docker
 
 ### Building the Docker Image

@@ -13,3 +13,5 @@ deeplab_face_segmentation.py
 skincolor_pipeline.py
 skincolor_segmentation_pipeline.py
 .nox/
+.coverage
+/htmlcov
