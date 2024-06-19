@@ -1,5 +1,4 @@
 import pytest
-import os
 from PIL import Image
 from ..test_utils import load_image_as_request_input, mock_context
 from src.handlers.arcface_handler.arcface_handler import ResnetArcfaceHandler
@@ -11,14 +10,12 @@ MOCK_PARAMS = [
     }
 ]
 
+IMAGE_PATHS = ["tests/test_images/not_bald.jpg"]
+
 parametrize_mock_context = pytest.mark.parametrize(
     "mock_context", MOCK_PARAMS, indirect=True
 )
-
-
-@pytest.fixture
-def sample_image_path():
-    return os.path.join("tests/test_images", "not_bald.jpg")
+parametrize_image_path = pytest.mark.parametrize("image_path", IMAGE_PATHS)
 
 
 @pytest.fixture
@@ -29,8 +26,8 @@ def handler_instance(mock_context):
 
 
 @pytest.fixture
-def req_input(sample_image_path):
-    return load_image_as_request_input(sample_image_path)
+def req_input(image_path):
+    return load_image_as_request_input(image_path)
 
 
 @pytest.fixture
@@ -44,6 +41,7 @@ def embeddings(handler_instance, preprocessed_image):
 
 
 @parametrize_mock_context
+@parametrize_image_path
 def test_preprocess(handler_instance, req_input):
     preprocessed_image = handler_instance.preprocess(req_input)
     assert len(preprocessed_image) == 1
@@ -52,6 +50,7 @@ def test_preprocess(handler_instance, req_input):
 
 
 @parametrize_mock_context
+@parametrize_image_path
 def test_inference(handler_instance, preprocessed_image):
     embeddings = handler_instance.inference(preprocessed_image)
     assert len(embeddings) == 1
@@ -60,6 +59,7 @@ def test_inference(handler_instance, preprocessed_image):
 
 
 @parametrize_mock_context
+@parametrize_image_path
 def test_postprocess(handler_instance, embeddings):
     final_result = handler_instance.postprocess(embeddings)
     assert len(final_result) == 1

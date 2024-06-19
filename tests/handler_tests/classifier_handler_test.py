@@ -1,5 +1,4 @@
 import pytest
-import os
 from PIL import Image
 from src.handlers.classifiers_handler.classifier_handler import (
     ResnetClassifierModelHandler,
@@ -16,14 +15,12 @@ MOCK_PARAMS = [
     {"model_dir": "models/race", "serialized_file": "weights/race_model.pth"},
 ]
 
+IMAGE_PATHS = ["tests/test_images/not_bald.jpg"]
+
 parametrize_mock_context = pytest.mark.parametrize(
     "mock_context", MOCK_PARAMS, indirect=True
 )
-
-
-@pytest.fixture
-def sample_image_path():
-    return os.path.join("tests/test_images", "not_bald.jpg")
+parametrize_image_path = pytest.mark.parametrize("image_path", IMAGE_PATHS)
 
 
 @pytest.fixture
@@ -34,8 +31,8 @@ def handler_instance(mock_context):
 
 
 @pytest.fixture
-def req_input(sample_image_path):
-    return load_image_as_request_input(sample_image_path)
+def req_input(image_path):
+    return load_image_as_request_input(image_path)
 
 
 @pytest.fixture
@@ -49,6 +46,7 @@ def inference_output(handler_instance, preprocessed_image):
 
 
 @parametrize_mock_context
+@parametrize_image_path
 def test_preprocess(handler_instance, req_input):
     preprocessed_image = handler_instance.preprocess(req_input)
     assert len(preprocessed_image) == 1
@@ -57,6 +55,7 @@ def test_preprocess(handler_instance, req_input):
 
 
 @parametrize_mock_context
+@parametrize_image_path
 def test_inference(handler_instance, preprocessed_image):
     result = handler_instance.inference(preprocessed_image)
     assert isinstance(result, list), "Inference result should be a list"
@@ -64,6 +63,7 @@ def test_inference(handler_instance, preprocessed_image):
 
 
 @parametrize_mock_context
+@parametrize_image_path
 def test_postprocess(handler_instance, inference_output):
     final_result = handler_instance.postprocess(inference_output)
     assert isinstance(final_result, list), "Final result should be a list"
