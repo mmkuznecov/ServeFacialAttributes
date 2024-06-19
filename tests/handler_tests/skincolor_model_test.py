@@ -30,7 +30,9 @@ def test_get_hue(skin_color_predictor):
     b_values = np.array([1, 1, 1])
     hues = skin_color_predictor.get_hue(a_values, b_values)
     assert isinstance(hues, np.ndarray), "Hue should be a numpy array"
-    assert hues.shape == a_values.shape, "Hue should have the same shape as input arrays"
+    assert (
+        hues.shape == a_values.shape
+    ), "Hue should have the same shape as input arrays"
 
 
 def test_mode_hist(skin_color_predictor):
@@ -43,7 +45,7 @@ def test_clustering(skin_color_predictor, sample_image, sample_mask):
     img = sample_image[sample_mask == 1]
     labels, model = skin_color_predictor.clustering(img)
     assert len(labels) == img.shape[0], "Labels should match the number of skin pixels"
-    assert hasattr(model, 'cluster_centers_'), "Model should have cluster centers"
+    assert hasattr(model, "cluster_centers_"), "Model should have cluster centers"
 
 
 def test_get_scalar_values(skin_color_predictor, sample_image, sample_mask):
@@ -59,7 +61,18 @@ def test_get_scalar_values(skin_color_predictor, sample_image, sample_mask):
 def test_get_skin_values(skin_color_predictor, sample_image, sample_mask):
     skin_values = skin_color_predictor.get_skin_values(sample_image, sample_mask)
     assert isinstance(skin_values, dict), "Result should be a dictionary"
-    for key in ["lum", "hue", "lum_std", "hue_std", "red", "green", "blue", "red_std", "green_std", "blue_std"]:
+    for key in [
+        "lum",
+        "hue",
+        "lum_std",
+        "hue_std",
+        "red",
+        "green",
+        "blue",
+        "red_std",
+        "green_std",
+        "blue_std",
+    ]:
         assert key in skin_values, f"Result should contain '{key}'"
 
 
@@ -68,6 +81,9 @@ def test_predict(skin_color_predictor, sample_image, sample_mask):
     assert isinstance(result, dict), "Result should be a dictionary"
     for key in ["lum", "hue", "lum_std", "hue_std", "a_values", "b_values"]:
         assert key in result, f"Result should contain '{key}'"
-    assert isinstance(result["a_values"], np.ndarray), "'a_values' should be a numpy array"
-    assert isinstance(result["b_values"], np.ndarray), "'b_values' should be a numpy array"
-
+    assert isinstance(
+        result["a_values"], np.ndarray
+    ), "'a_values' should be a numpy array"
+    assert isinstance(
+        result["b_values"], np.ndarray
+    ), "'b_values' should be a numpy array"
