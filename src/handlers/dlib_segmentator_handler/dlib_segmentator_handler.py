@@ -5,7 +5,7 @@ import os
 import cv2
 import io
 import base64
-
+from typing import List, Dict, Any
 
 TS_IS_RUNNING = bool(os.environ.get("TS_IS_RUNNING"))
 
@@ -17,7 +17,7 @@ else:
 
 class DlibSegmentatorHandler(BaseHandler):
 
-    def initialize(self, context):
+    def initialize(self, context: Any) -> None:
         """Initialize method loads the model."""
         self.manifest = context.manifest
         properties = context.system_properties
@@ -26,7 +26,7 @@ class DlibSegmentatorHandler(BaseHandler):
         landmarks_model = f"{model_dir}/{serialized_file}"
         self.model = DlibSegmentator(landmarks_model)
 
-    def preprocess(self, data):
+    def preprocess(self, data: List[Dict[str, Any]]) -> List[np.ndarray]:
         images = []
         for request_data in data:
             image_data = request_data.get("data") or request_data.get("body")
@@ -40,14 +40,14 @@ class DlibSegmentatorHandler(BaseHandler):
             images.append(image)
         return images
 
-    def inference(self, imgs):
+    def inference(self, imgs: List[np.ndarray]) -> List[np.ndarray]:
         segmentation_masks = []
         for img in imgs:
             mask = self.model.segment_face(img)
             segmentation_masks.append(mask)
         return segmentation_masks
 
-    def postprocess(self, segmentation_masks):
+    def postprocess(self, segmentation_masks: List[np.ndarray]) -> List[Dict[str, str]]:
         # Convert segmentation masks to base64-encoded PNG format
         base64_masks = []
         for mask in segmentation_masks:

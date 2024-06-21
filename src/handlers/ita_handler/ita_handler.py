@@ -4,6 +4,7 @@ import io
 import numpy as np
 import cv2
 import os
+from typing import Any, List, Dict, Optional
 
 TS_IS_RUNNING = bool(os.environ.get("TS_IS_RUNNING"))
 
@@ -18,7 +19,7 @@ class ITAHandler(BaseHandler):
     Handler for calculating Individual Typology Angle (ITA).
     """
 
-    def initialize(self, context):
+    def initialize(self, context: Any) -> None:
         self.manifest = context.manifest
         properties = context.system_properties
         model_dir = properties.get("model_dir")
@@ -28,7 +29,7 @@ class ITAHandler(BaseHandler):
         # Initialize the ITACalculator with the model path
         self.ita_calculator = ITACalculator(model_path)
 
-    def preprocess(self, data):
+    def preprocess(self, data: List[Dict[str, Any]]) -> List[np.ndarray]:
         images = []
         for request_data in data:
             image_data = request_data.get("data") or request_data.get("body")
@@ -42,13 +43,15 @@ class ITAHandler(BaseHandler):
             images.append(image)
         return images
 
-    def inference(self, imgs):
+    def inference(self, imgs: List[np.ndarray]) -> List[Optional[float]]:
         ita_values = []
         for img in imgs:
             ita = self.ita_calculator.calculate_ita(img)
             ita_values.append(ita)
         return ita_values
 
-    def postprocess(self, inference_output):
+    def postprocess(
+        self, inference_output: List[Optional[float]]
+    ) -> List[Dict[str, Optional[float]]]:
         results = [{"ita_value": ita} for ita in inference_output]
         return results

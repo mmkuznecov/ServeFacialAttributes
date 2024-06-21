@@ -9,9 +9,33 @@ NOSE = [31, 32, 33, 34, 35, 27]
 LEFT_EYE = [42, 43, 44, 45, 46, 47]
 RIGHT_EYE = [36, 37, 38, 39, 40, 41]
 FOREHEAD = [
-    0, 77, 75, 76, 68, 69, 70, 71, 80, 72, 73,
-    79, 74, 78, 16, 26, 25, 24, 23, 22, 27,
-    21, 20, 19, 18, 17]
+    0,
+    77,
+    75,
+    76,
+    68,
+    69,
+    70,
+    71,
+    80,
+    72,
+    73,
+    79,
+    74,
+    78,
+    16,
+    26,
+    25,
+    24,
+    23,
+    22,
+    27,
+    21,
+    20,
+    19,
+    18,
+    17,
+]
 
 SEGMENTATION_COLOR_MAPPING = {
     tuple(NOSE): 60,
@@ -25,11 +49,11 @@ SEGMENTATION_COLOR_MAPPING = {
 
 
 class DlibSegmentator:
-    def __init__(self, predictor_path):
+    def __init__(self, predictor_path: str) -> None:
         self.detector = dlib.get_frontal_face_detector()
         self.predictor = dlib.shape_predictor(predictor_path)
 
-    def segment_face(self, image):
+    def segment_face(self, image: np.ndarray) -> np.ndarray:
         # Convert the image to RGB color space
         image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 

@@ -1,9 +1,10 @@
 import numpy as np
 import cv2
 import dlib
+from typing import Optional
 
 
-def extract_non_black(img):
+def extract_non_black(img: np.ndarray) -> np.ndarray:
     img_total = img[:, :, 0] + img[:, :, 1] + img[:, :, 2]
     non_black = np.where(img_total > 0)
     extract_img = []
@@ -13,7 +14,7 @@ def extract_non_black(img):
     return extract_img
 
 
-def calc_ita(masked_img):
+def calc_ita(masked_img: np.ndarray) -> float:
     lab_img = cv2.cvtColor(masked_img, cv2.COLOR_RGB2Lab)
     l_img, a_img, b_img = cv2.split(lab_img)
     l_img = l_img * (100 / 255)
@@ -29,7 +30,7 @@ class ITACalculator:
         self.detector = dlib.get_frontal_face_detector()
         self.predictor = dlib.shape_predictor(predictor_path)
 
-    def calculate_ita(self, image):
+    def calculate_ita(self, image: np.ndarray) -> Optional[float]:
         image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
         # Detect faces in the image

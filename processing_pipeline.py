@@ -75,7 +75,7 @@ def save_colored_mask(mask_data, output_path, use_color_map=True):
         cv2.imwrite(output_path, mask)
 
 if __name__ == "__main__":
-    service_url = "http://localhost:8080/predictions/"
+    service_url = "http://0.0.0.0:8080/predictions/"
     images_dir = "tests/test_images"
     output_dir = "segmentation_results"
     os.makedirs(output_dir, exist_ok=True)

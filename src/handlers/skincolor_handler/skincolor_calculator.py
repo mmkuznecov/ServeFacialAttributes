@@ -2,28 +2,39 @@ import numpy as np
 from skimage.filters import gaussian
 from skimage.color import rgb2lab, lab2rgb
 from sklearn import cluster
+from typing import Dict, List, Tuple
 
 
 class SkinColorPredictor:
     def __init__(self):
         pass
 
-    def get_hue(self, a_values, b_values, eps=1e-8):
+    def get_hue(
+        self, a_values: np.ndarray, b_values: np.ndarray, eps: float = 1e-8
+    ) -> np.ndarray:
         """Compute hue angle"""
         return np.degrees(np.arctan(b_values / (a_values + eps)))
 
-    def mode_hist(self, x, bins="sturges"):
+    def mode_hist(self, x: np.ndarray, bins: str = "sturges") -> float:
         """Compute a histogram and return the mode"""
         hist, bins = np.histogram(x, bins=bins)
         mode = bins[hist.argmax()]
         return mode
 
-    def clustering(self, x, n_clusters=5, random_state=2021):
+    def clustering(
+        self, x: np.ndarray, n_clusters: int = 5, random_state: int = 2021
+    ) -> Tuple[np.ndarray, cluster.KMeans]:
         model = cluster.KMeans(n_clusters, random_state=random_state)
         model.fit(x)
         return model.labels_, model
 
-    def get_scalar_values(self, skin_smoothed_lab, labels, topk=3, bins="sturges"):
+    def get_scalar_values(
+        self,
+        skin_smoothed_lab: np.ndarray,
+        labels: np.ndarray,
+        topk: int = 3,
+        bins: str = "sturges",
+    ) -> Dict[str, np.ndarray]:
         # gather values of interest
         hue_angle = self.get_hue(skin_smoothed_lab[:, 1], skin_smoothed_lab[:, 2])
         skin_smoothed = lab2rgb(skin_smoothed_lab)
@@ -64,7 +75,9 @@ class SkinColorPredictor:
 
         return res_topk
 
-    def get_skin_values(self, img, mask, n_clusters=5):
+    def get_skin_values(
+        self, img: np.ndarray, mask: np.ndarray, n_clusters: int = 5
+    ) -> Dict[str, float]:
         # smoothing
         img_smoothed = gaussian(img, sigma=(1, 1), truncate=4, channel_axis=2)
 
@@ -94,7 +107,9 @@ class SkinColorPredictor:
 
         return res
 
-    def predict(self, image, mask):
+    def predict(
+        self, image: np.ndarray, mask: np.ndarray
+    ) -> Dict[str, Union[np.ndarray, float]]:
         # Convert image and mask to numpy arrays
         img_original = np.asarray(image)
         mask = np.asarray(mask)

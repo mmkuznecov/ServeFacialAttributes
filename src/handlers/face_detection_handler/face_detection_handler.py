@@ -2,6 +2,7 @@ from ts.torch_handler.base_handler import BaseHandler
 from ultralytics import YOLO
 from PIL import Image
 import io
+from typing import List, Dict, Any
 
 
 class YOLOv8FaceDetectionHandler(BaseHandler):
@@ -9,7 +10,7 @@ class YOLOv8FaceDetectionHandler(BaseHandler):
     TorchServe handler for YOLOv8 face detection.
     """
 
-    def initialize(self, context):
+    def initialize(self, context: Any) -> None:
         """Initialize method loads the model."""
         self.manifest = context.manifest
         properties = context.system_properties
@@ -18,7 +19,7 @@ class YOLOv8FaceDetectionHandler(BaseHandler):
         model_pt_path = f"{model_dir}/{serialized_file}"
         self.model = YOLO(model_pt_path)
 
-    def preprocess(self, data):
+    def preprocess(self, data: List[Dict[str, Any]]) -> List[Image.Image]:
         """Preprocess the input data."""
         images = []
 
@@ -29,7 +30,7 @@ class YOLOv8FaceDetectionHandler(BaseHandler):
 
         return images
 
-    def inference(self, imgs):
+    def inference(self, imgs: List[Image.Image]) -> List[Any]:
         """Run inference on the preprocessed data."""
         results = []
         for img in imgs:
@@ -37,7 +38,9 @@ class YOLOv8FaceDetectionHandler(BaseHandler):
             results.append(result)
         return results
 
-    def postprocess(self, inference_output):
+    def postprocess(
+        self, inference_output: List[Any]
+    ) -> List[Dict[str, List[List[float]]]]:
         """Postprocess the inference output."""
         results = []
         for result in inference_output:

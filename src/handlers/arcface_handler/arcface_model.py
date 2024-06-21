@@ -1,8 +1,7 @@
-from ts.torch_handler.base_handler import BaseHandler
 from PIL import Image
 import torchvision.transforms as transforms
 import torch
-from typing import List
+from typing import List, Dict, Any
 import os
 import numpy as np
 
@@ -14,7 +13,7 @@ else:
     from .arcface_resnet import resnet_face18
 
 
-def load_model(filepath):
+def load_model(filepath: str) -> torch.nn.Module:
     # Create the model instance
     model = resnet_face18(False)
 
@@ -31,7 +30,7 @@ def load_model(filepath):
 
 
 class ArcfaceModel:
-    def __init__(self, weights_path):
+    def __init__(self, weights_path: str) -> None:
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.resnet = load_model(weights_path)
         self.resnet.to(self.device)

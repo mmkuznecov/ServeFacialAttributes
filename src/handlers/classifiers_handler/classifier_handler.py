@@ -3,8 +3,8 @@ import io
 import json
 import torch
 from PIL import Image
+from typing import List, Dict, Any
 from ts.torch_handler.base_handler import BaseHandler
-
 
 TS_IS_RUNNING = bool(os.environ.get("TS_IS_RUNNING"))
 
@@ -20,7 +20,7 @@ class ResnetClassifierModelHandler(BaseHandler):
     for facial attribute prediction.
     """
 
-    def initialize(self, context):
+    def initialize(self, context: Any) -> None:
         self.manifest = context.manifest
         properties = context.system_properties
         model_dir = properties.get("model_dir")
@@ -49,7 +49,7 @@ class ResnetClassifierModelHandler(BaseHandler):
 
         self.initialized = True
 
-    def _preprocess_one_image(self, req):
+    def _preprocess_one_image(self, req: Dict[str, Any]) -> Image.Image:
         """
         Process one single image.
         """
@@ -60,14 +60,16 @@ class ResnetClassifierModelHandler(BaseHandler):
         image = Image.open(io.BytesIO(image))
         return image
 
-    def preprocess(self, requests):
+    def preprocess(self, requests: List[Dict[str, Any]]) -> List[Image.Image]:
         images = [self._preprocess_one_image(req=req) for req in requests]
         return images
 
-    def inference(self, imgs):
+    def inference(self, imgs: List[Image.Image]) -> List[Dict[str, float]]:
         # Perform model inference and return the raw outputs
         outputs = self.model.predict_label(imgs, self.mapping)
         return outputs
 
-    def postprocess(self, inference_output):
+    def postprocess(
+        self, inference_output: List[Dict[str, float]]
+    ) -> List[Dict[str, float]]:
         return inference_output

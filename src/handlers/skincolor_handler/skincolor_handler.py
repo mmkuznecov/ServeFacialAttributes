@@ -5,6 +5,7 @@ import io
 import numpy as np
 import cv2
 import os
+from typing import List, Dict, Any, Union
 
 TS_IS_RUNNING = bool(os.environ.get("TS_IS_RUNNING"))
 
@@ -17,12 +18,12 @@ else:
 class SkinColorHandler(BaseHandler):
     """Handler for predicting skin color values."""
 
-    def initialize(self, context):
+    def initialize(self, context: Any) -> None:
         self.manifest = context.manifest
         properties = context.system_properties
         self.skin_color_predictor = SkinColorPredictor()
 
-    def preprocess(self, data):
+    def preprocess(self, data: List[Dict[str, Any]]) -> List[Dict[str, np.ndarray]]:
         input_data = []
         for request_data in data:
             # Extract image and mask data from the request body
@@ -65,20 +66,20 @@ class SkinColorHandler(BaseHandler):
 
         return input_data
 
-    def inference(self, input_data):
+    def inference(
+        self, input_data: List[Dict[str, np.ndarray]]
+    ) -> List[Dict[str, Union[np.ndarray, float]]]:
         results = []
         for data in input_data:
             image = data["image"]
             mask = data["mask"]
             result = self.skin_color_predictor.predict(image, mask)
             results.append(result)
-        return result
+        return results
 
-    def postprocess(self, inference_output):
-        if isinstance(inference_output, dict):
-            # If inference_output is a single dictionary, wrap it in a list
-            inference_output = [inference_output]
-
+    def postprocess(
+        self, inference_output: List[Dict[str, Union[np.ndarray, float]]]
+    ) -> List[Dict[str, Union[float, List[float]]]]:
         processed_output = [
             {
                 "lum": result["lum"],

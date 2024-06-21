@@ -6,6 +6,7 @@ import cv2
 import io
 import base64
 import torch
+from typing import List, Dict, Any
 
 TS_IS_RUNNING = bool(os.environ.get("TS_IS_RUNNING"))
 
@@ -16,7 +17,7 @@ else:
 
 
 class FaceSegmentationHandler(BaseHandler):
-    def initialize(self, context):
+    def initialize(self, context: Any) -> None:
         """Initialize method loads the model."""
         self.manifest = context.manifest
         properties = context.system_properties
@@ -26,7 +27,7 @@ class FaceSegmentationHandler(BaseHandler):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model = FaceSegmentationPredictor(model_path, device)
 
-    def preprocess(self, data):
+    def preprocess(self, data: List[Dict[str, Any]]) -> List[Image.Image]:
         images = []
         for request_data in data:
             image_data = request_data.get("data") or request_data.get("body")
@@ -34,14 +35,16 @@ class FaceSegmentationHandler(BaseHandler):
             images.append(image)
         return images
 
-    def inference(self, images):
+    def inference(self, images: List[Image.Image]) -> List[Image.Image]:
         segmentation_masks = []
         for image in images:
             mask = self.model.predict(image)
             segmentation_masks.append(mask)
         return segmentation_masks
 
-    def postprocess(self, segmentation_masks):
+    def postprocess(
+        self, segmentation_masks: List[Image.Image]
+    ) -> List[Dict[str, str]]:
         # Convert segmentation masks to base64-encoded PNG format
         base64_masks = []
         for mask in segmentation_masks:
