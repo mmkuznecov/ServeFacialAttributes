@@ -51,8 +51,8 @@ class SixDRepNet360Handler(BaseHandler):
         for output in inference_output:
             results.append(
                 {
-                    "yaw": float(output[0]),
-                    "pitch": float(output[1]),
+                    "pitch": float(output[0]),
+                    "yaw": float(output[1]),
                     "roll": float(output[2]),
                 }
             )
