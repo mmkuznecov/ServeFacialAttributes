@@ -54,11 +54,7 @@ class MiVOLOHandler(BaseHandler):
         self.manifest = context.manifest
         properties = context.system_properties
         model_dir = properties.get("model_dir")
-        self.device = torch.device(
-            "cuda:" + str(properties.get("gpu_id"))
-            if torch.cuda.is_available()
-            else "cpu"
-        )
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         serialized_file = self.manifest["model"]["serializedFile"]
         model_pt_path = os.path.join(model_dir, serialized_file)

@@ -2,7 +2,7 @@ import numpy as np
 from skimage.filters import gaussian
 from skimage.color import rgb2lab, lab2rgb
 from sklearn import cluster
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 
 
 class SkinColorPredictor:

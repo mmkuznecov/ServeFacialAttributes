@@ -17,8 +17,9 @@ transform = transforms.Compose(
 
 
 class CustomResnetClassifier:
-    def __init__(self, weights: str, num_classes=1):
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+    def __init__(self, weights: str, device, num_classes=1):
+        # self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        self.device = device
         self.num_classes = num_classes
         model = models.resnet50(pretrained=False)
         num_ftrs = model.fc.in_features

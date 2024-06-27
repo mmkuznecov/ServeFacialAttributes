@@ -24,11 +24,8 @@ class ResnetClassifierModelHandler(BaseHandler):
         self.manifest = context.manifest
         properties = context.system_properties
         model_dir = properties.get("model_dir")
-        self.device = torch.device(
-            "cuda:" + str(properties.get("gpu_id"))
-            if torch.cuda.is_available()
-            else "cpu"
-        )
+
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         # Load index_to_name.json file to get mapping
         # and convert keys to integers
@@ -44,7 +41,7 @@ class ResnetClassifierModelHandler(BaseHandler):
         serialized_file = self.manifest["model"]["serializedFile"]
         model_pt_path = os.path.join(model_dir, serialized_file)
         self.model = CustomResnetClassifier(
-            weights=model_pt_path, num_classes=self.num_classes
+            weights=model_pt_path, num_classes=self.num_classes, device=self.device
         )
 
         self.initialized = True
