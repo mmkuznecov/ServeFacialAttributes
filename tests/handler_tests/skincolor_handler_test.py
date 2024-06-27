@@ -70,9 +70,13 @@ def test_preprocess(handler_instance, req_input):
 @parametrize_image_path
 def test_inference(handler_instance, preprocessed_image):
     inference_output = handler_instance.inference(preprocessed_image)
-    assert isinstance(inference_output, dict), "Inference output should be a dictionary"
-    assert "lum" in inference_output, "Inference output should contain 'lum'"
-    assert "hue" in inference_output, "Inference output should contain 'hue'"
+    assert isinstance(inference_output, list), "Inference output should be a list"
+    assert len(inference_output) > 0, "Inference output list should not be empty"
+
+    expected_keys = ["lum", "hue", "lum_std", "hue_std", "a_values", "b_values"]
+    for key in expected_keys:
+        assert key in inference_output[0], f"Inference output should contain '{key}'"
+
     print("Inference result:", inference_output)
 
 
