@@ -9,6 +9,11 @@ from src.handlers.classifiers_handler.customresnetclassifier import (
 
 
 @pytest.fixture
+def device():
+    return "cuda" if torch.cuda.is_available() else "cpu"
+
+
+@pytest.fixture
 def bald_weights_path():
     return "models/baldness/weights/bald_weights.pth"
 
@@ -35,14 +40,14 @@ def race_mapping():
 
 
 @pytest.fixture
-def bald_classifier(bald_weights_path):
-    return CustomResnetClassifier(weights=bald_weights_path, num_classes=1)
+def bald_classifier(bald_weights_path, device):
+    return CustomResnetClassifier(bald_weights_path, device, num_classes=1)
 
 
 @pytest.fixture
-def race_classifier(race_weights_path):
+def race_classifier(race_weights_path, device):
     return CustomResnetClassifier(
-        weights=race_weights_path, num_classes=7
+        race_weights_path, device, num_classes=7
     )  # num_classes для race модели
 
 
@@ -56,16 +61,16 @@ def sample_image(sample_image_path):
     return Image.open(sample_image_path)
 
 
-def test_load_model(bald_weights_path):
-    classifier = CustomResnetClassifier(weights=bald_weights_path, num_classes=1)
+def test_load_model(bald_weights_path, device):
+    classifier = CustomResnetClassifier(bald_weights_path, device, num_classes=1)
     assert isinstance(
         classifier.model, torch.nn.Module
     ), "Model should be an instance of torch.nn.Module"
 
 
-def test_process_image(sample_image):
+def test_process_image(sample_image, device):
     classifier = CustomResnetClassifier(
-        weights="models/baldness/weights/bald_weights.pth", num_classes=1
+        "models/baldness/weights/bald_weights.pth", device, num_classes=1
     )
     transformed_image = classifier.process_image(sample_image)
     assert isinstance(
