@@ -1,5 +1,3 @@
-import pytest
-import io
 import base64
 import cv2
 import numpy as np
@@ -7,7 +5,15 @@ from PIL import Image
 from src.handlers.deeplab_segmentator_handler.deeplab_segmentator_handler import (
     FaceSegmentationHandler,
 )
-from ..test_utils import load_image_as_request_input, mock_context
+from ..test_utils import mock_context
+from ..fixture_utils import (
+    create_handler_instance,
+    req_input,
+    preprocessed_image,
+    inference_output,
+    create_parametrize_mock_context,
+    create_parametrize_image_path,
+)
 
 MOCK_PARAMS = [
     {
@@ -18,32 +24,10 @@ MOCK_PARAMS = [
 
 IMAGE_PATHS = ["tests/test_images/bald.jpg", "tests/test_images/not_bald.jpg"]
 
-parametrize_mock_context = pytest.mark.parametrize(
-    "mock_context", MOCK_PARAMS, indirect=True
-)
-parametrize_image_path = pytest.mark.parametrize("image_path", IMAGE_PATHS)
+parametrize_mock_context = create_parametrize_mock_context(MOCK_PARAMS)
+parametrize_image_path = create_parametrize_image_path(IMAGE_PATHS)
 
-
-@pytest.fixture
-def handler_instance(mock_context):
-    handler = FaceSegmentationHandler()
-    handler.initialize(mock_context)
-    return handler
-
-
-@pytest.fixture
-def req_input(image_path):
-    return load_image_as_request_input(image_path)
-
-
-@pytest.fixture
-def preprocessed_image(handler_instance, req_input):
-    return handler_instance.preprocess(req_input)
-
-
-@pytest.fixture
-def inference_output(handler_instance, preprocessed_image):
-    return handler_instance.inference(preprocessed_image)
+handler_instance = create_handler_instance(FaceSegmentationHandler)
 
 
 @parametrize_mock_context

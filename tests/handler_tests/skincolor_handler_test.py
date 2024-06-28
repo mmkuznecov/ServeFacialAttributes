@@ -1,7 +1,12 @@
 import pytest
 import numpy as np
 from src.handlers.skincolor_handler.skincolor_handler import SkinColorHandler
-from ..test_utils import load_image_as_request_input, mock_context
+from ..test_utils import mock_context, load_image_as_request_input
+from ..fixture_utils import (
+    create_handler_instance,
+    create_parametrize_mock_context,
+    create_parametrize_image_path,
+)
 
 MOCK_PARAMS = [
     {
@@ -10,24 +15,16 @@ MOCK_PARAMS = [
     }
 ]
 
-IMAGE_PATHS = [
-    (
-        "tests/test_images/skincolor_samples/00000.png",
-        "tests/test_images/skincolor_samples/00000_mask.png",
-    ),
-]
+IMAGE_PATHS = ["tests/test_images/skincolor_samples/00000.png"]
+MASK_PATHS = ["tests/test_images/skincolor_samples/00000_mask.png"]
 
-parametrize_mock_context = pytest.mark.parametrize(
-    "mock_context", MOCK_PARAMS, indirect=True
+parametrize_mock_context = create_parametrize_mock_context(MOCK_PARAMS)
+parametrize_image_path = create_parametrize_image_path(IMAGE_PATHS)
+parametrize_mask_path = create_parametrize_image_path(
+    MASK_PATHS, param_name="mask_path"
 )
-parametrize_image_path = pytest.mark.parametrize("image_path, mask_path", IMAGE_PATHS)
 
-
-@pytest.fixture
-def handler_instance(mock_context):
-    handler = SkinColorHandler()
-    handler.initialize(mock_context)
-    return handler
+handler_instance = create_handler_instance(SkinColorHandler)
 
 
 @pytest.fixture
@@ -56,6 +53,7 @@ def inference_output(handler_instance, preprocessed_image):
 
 @parametrize_mock_context
 @parametrize_image_path
+@parametrize_mask_path
 def test_preprocess(handler_instance, req_input):
     preprocessed_image = handler_instance.preprocess(req_input)
     assert len(preprocessed_image) == 1
@@ -68,6 +66,7 @@ def test_preprocess(handler_instance, req_input):
 
 @parametrize_mock_context
 @parametrize_image_path
+@parametrize_mask_path
 def test_inference(handler_instance, preprocessed_image):
     inference_output = handler_instance.inference(preprocessed_image)
     assert isinstance(inference_output, list), "Inference output should be a list"
@@ -82,6 +81,7 @@ def test_inference(handler_instance, preprocessed_image):
 
 @parametrize_mock_context
 @parametrize_image_path
+@parametrize_mask_path
 def test_postprocess(handler_instance, inference_output):
     postprocessed_output = handler_instance.postprocess(inference_output)
     assert isinstance(postprocessed_output, list), "Output should be a list"
