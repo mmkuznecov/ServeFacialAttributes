@@ -10,6 +10,12 @@ def download_weights(model_name, weights_link, weights_dir):
     print(f"Downloaded weights for {model_name}")
 
 
+def check_weights_exist(weights_dir):
+    if os.path.exists(weights_dir) and os.listdir(weights_dir):
+        return True
+    return False
+
+
 models_dir = "models"
 for model_name in os.listdir(models_dir):
     model_dir = os.path.join(models_dir, model_name)
@@ -21,4 +27,7 @@ for model_name in os.listdir(models_dir):
             weights_link = settings.get("weights_link")
             if weights_link:
                 weights_dir = os.path.join(model_dir, "weights")
-                download_weights(model_name, weights_link, weights_dir)
+                if check_weights_exist(weights_dir):
+                    print(f"Weights for {model_name} already exist. Skipping download.")
+                else:
+                    download_weights(model_name, weights_link, weights_dir)
