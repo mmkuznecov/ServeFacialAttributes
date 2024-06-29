@@ -2,6 +2,10 @@ from typing import Optional
 import torch
 from timm.data import resolve_data_config
 import os
+from timm.data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
+from typing import List
+from PIL import Image
+import numpy as np
 
 
 TS_IS_RUNNING = bool(os.environ.get("TS_IS_RUNNING"))
@@ -12,6 +16,38 @@ else:
     from .create_timm_model import create_model
 
 has_compile = hasattr(torch, "compile")
+
+def prepare_batch(
+    image_list: List[Image.Image],
+    device: torch.device,
+    target_size: int = 224,
+    mean: List[float] = IMAGENET_DEFAULT_MEAN,
+    std: List[float] = IMAGENET_DEFAULT_STD,
+) -> torch.Tensor:
+    batch_images = []
+    for img in image_list:
+        img = img.resize((target_size, target_size))
+        img = img.convert("RGB")
+        img = torch.from_numpy(np.array(img)).float()
+        img = img / 255.0
+        img = img.permute(2, 0, 1)
+        img = (img - torch.tensor(mean)[:, None, None]) / torch.tensor(std)[
+            :, None, None
+        ]
+        batch_images.append(img)
+
+    batch_images = torch.stack(batch_images, dim=0)
+    if device:
+        batch_images = batch_images.to(device)
+    return batch_images
+
+
+def age_calculation(
+    model_output: float, max_age: float, min_age: float, avg_age: float
+) -> float:
+    result = model_output * (max_age - min_age) + avg_age
+    result = round(result, 2)
+    return result
 
 
 class Meta:
