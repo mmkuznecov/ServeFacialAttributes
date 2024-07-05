@@ -82,6 +82,8 @@ If you want to get an interactive `.html` coverage report run:
 pytest --cov=src --cov-report=term-missing --cov-report=html -vv tests/handler_tests/
 ```
 
+Also you can additionally use [nox](https://nox.thea.codes/en/stable/) for test automation.
+
 ## Running with Docker
 
 ### Building the Docker Image
