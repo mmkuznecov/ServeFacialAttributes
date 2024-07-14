@@ -64,7 +64,7 @@ After running the command, open a web browser and navigate to http://localhost:y
 
 ### Testing Custom Handlers
 
-Run the following command to test custom handler for classification with context mocking:
+<!-- Run the following command to test custom handler for classification with context mocking:
 
 ```bash
 pytest -vv tests/handler_tests
@@ -82,7 +82,85 @@ If you want to get an interactive `.html` coverage report run:
 pytest --cov=src --cov-report=term-missing --cov-report=html -vv tests/handler_tests/
 ```
 
-Also you can additionally use [nox](https://nox.thea.codes/en/stable/) for test automation.
+Also you can additionally use [nox](https://nox.thea.codes/en/stable/) for test automation. This method  -->
+
+## Testing
+
+This project uses [Nox](https://nox.thea.codes/en/stable/) for test automation and environment management. Nox allows you to run tests in isolated environments with specific dependencies, ensuring consistent and reliable test results.
+
+### Using Nox (Recommended)
+
+1. Install Nox if you haven't already:
+
+   ```bash
+   pip install nox
+   ```
+
+2. Run all tests (including MiVOLO):
+
+   ```bash
+   nox
+   ```
+
+3. Run specific test suites:
+
+   - All tests except MiVOLO:
+     ```bash
+     nox -s tests
+     ```
+
+   - Only MiVOLO tests:
+     ```bash
+     nox -s mivolo_tests
+     ```
+
+Nox automatically manages the test environments and dependencies, ensuring that each test suite runs in its appropriate context.
+
+### Customizing Test Environments
+
+Nox allows you to customize test environments for different parts of your project. You can modify the `noxfile.py` to add or change test environments as needed. For example, the MiVOLO tests use a separate environment with specific dependencies:
+
+```python
+@nox.session(name="mivolo_tests", venv_backend="venv")
+def mivolo_tests(session):
+    # Install pytest
+    session.install("pytest")
+
+    # Install the current project and its dependencies
+    session.install("-r", "requirements.txt")
+
+    # Install specific requirements for MiVOLO
+    session.install("-r", "models/age/age_requirements.txt")
+
+    # Run MiVOLO tests
+    session.run("pytest", "-vv", "tests/handler_tests/mivolo_handler_test.py")
+```
+
+**Note:** Assembly of environments for specific handlers can require a notable amount of time.
+
+For more information on how to customize test environments and sessions, refer to the [Nox documentation](https://nox.thea.codes/en/stable/).
+
+### Using pytest directly (Alternative)
+
+While Nox is the recommended approach, you can still run tests directly using pytest if needed:
+
+1. Run all tests:
+
+   ```bash
+   pytest -vv tests/handler_tests
+   ```
+
+2. Check test coverage:
+
+   ```bash
+   pytest --cov=src --cov-report=term-missing -vv tests/handler_tests
+   ```
+
+3. Generate an interactive HTML coverage report:
+
+   ```bash
+   pytest --cov=src --cov-report=term-missing --cov-report=html -vv tests/handler_tests/
+   ```
 
 ## Running with Docker
 
