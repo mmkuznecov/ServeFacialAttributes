@@ -6,7 +6,7 @@ python utils/download.py
 
 # Run tests (excluding mivolo_handler_test.py)
 echo "Running tests..."
-pytest -vv tests/handler_tests/ --ignore tests/handler_tests/mivolo_handler_test.py
+nox
 
 # Check the exit status of the pytest command
 if [ $? -eq 0 ]; then
