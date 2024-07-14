@@ -62,28 +62,6 @@ locust -f locustfile.py --host=http://localhost:8080 --web-port=[your_port]
 After running the command, open a web browser and navigate to http://localhost:your_port to access Locust's web interface. From here, you can start the test, specify the number of users to simulate, the spawn rate, and monitor the performance metrics in real-time.
 
 
-### Testing Custom Handlers
-
-<!-- Run the following command to test custom handler for classification with context mocking:
-
-```bash
-pytest -vv tests/handler_tests
-```
-
-If you want to check tests code coverage, you can also run:
-
-```bash
-pytest --cov=src --cov-report=term-missing -vv tests/handler_tests
-```
-
-If you want to get an interactive `.html` coverage report run:
-
-```bash
-pytest --cov=src --cov-report=term-missing --cov-report=html -vv tests/handler_tests/
-```
-
-Also you can additionally use [nox](https://nox.thea.codes/en/stable/) for test automation. This method  -->
-
 ## Testing
 
 This project uses [Nox](https://nox.thea.codes/en/stable/) for test automation and environment management. Nox allows you to run tests in isolated environments with specific dependencies, ensuring consistent and reliable test results.
