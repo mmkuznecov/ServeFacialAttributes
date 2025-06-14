@@ -4,6 +4,8 @@
 
 This project offers a suite of services similar to Microsoft Cognitive Services, but open source and built on top of TorchServe. It provides various facial attribute predictions, such as emotions, gender, head pose, face detection, and individual typology angle (ITA).
 
+Full technical report on this project can be found in [techreport file](techreport.pdf).
+
 ## Updates
 
 - **02.04.2024** - Age estimation model is added. Model is built upon [MiVOLO](https://github.com/WildChlamydia/MiVOLO) project which is currently a [SOTA](https://paperswithcode.com/task/age-estimation) in age estimation.
